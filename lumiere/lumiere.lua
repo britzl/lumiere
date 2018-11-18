@@ -11,6 +11,11 @@ local clear_buffers = {}
 
 local quad_pred = nil
 
+
+M.MATERIAL_MIX = hash("mix")
+M.MATERIAL_COPY = hash("copy")
+M.MATERIAL_MULTIPLY = hash("multiply")
+
 function M.init()
 	width = render.get_window_width()
 	height = render.get_window_height()
@@ -72,7 +77,9 @@ end
 
 
 
-function M.draw_render_target(rt)
+function M.draw_render_targets(render_targets, material)
+	material = material or M.MATERIAL_COPY
+	
 	render.set_depth_mask(false)
 	render.disable_state(render.STATE_DEPTH_TEST)
 	render.disable_state(render.STATE_STENCIL_TEST)
@@ -81,10 +88,14 @@ function M.draw_render_target(rt)
 	render.enable_state(render.STATE_BLEND)
 	render.set_blend_func(render.BLEND_SRC_ALPHA, render.BLEND_ONE_MINUS_SRC_ALPHA)
 
-	render.enable_material(hash("quad"))
-	render.enable_texture(0, rt.render_target, render.BUFFER_COLOR_BIT)
+	render.enable_material(material)
+	for i=1,#render_targets do
+		render.enable_texture(i - 1, render_targets[i].render_target, render.BUFFER_COLOR_BIT)
+	end
 	render.draw(quad_pred)
-	render.disable_texture(0, rt.render_target)
+	for i=1,#render_targets do
+		render.disable_texture(i - 1, render_targets[i].render_target, render.BUFFER_COLOR_BIT)
+	end
 	render.disable_material()
 end
 

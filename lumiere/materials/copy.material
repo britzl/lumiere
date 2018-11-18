@@ -1,7 +1,7 @@
 name: "lumiere_quad"
 tags: "lumiere_quad"
 vertex_program: "/lumiere/materials/quad.vp"
-fragment_program: "/lumiere/materials/quad.fp"
+fragment_program: "/lumiere/materials/copy.fp"
 vertex_constants {
   name: "mtx_view"
   type: CONSTANT_TYPE_VIEW

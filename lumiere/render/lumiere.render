@@ -1,0 +1,13 @@
+script: "/lumiere/render/lumiere.render_script"
+materials {
+  name: "copy"
+  material: "/lumiere/materials/copy.material"
+}
+materials {
+  name: "mix"
+  material: "/lumiere/materials/mix.material"
+}
+materials {
+  name: "multiply"
+  material: "/lumiere/materials/multiply.material"
+}
