@@ -23,6 +23,7 @@ function M.init()
 end
 
 
+-- call render.clear() with specified settings
 function M.clear(color, depth, stencil)
 	if color then
 		clear_buffers[render.BUFFER_COLOR_BIT] = color
@@ -41,42 +42,23 @@ function M.clear(color, depth, stencil)
 end
 
 
+-- set view projection to specified matrices
+function M.set_view_projection(view, projection)
+	render.set_view(view or IDENTITY)
+	render.set_projection(projection or IDENTITY)
+end
+
+
+-- set view projection to identity matrix
 function M.set_identity_view_projection()
 	render.set_view(IDENTITY)
 	render.set_projection(IDENTITY)
 end
 
 
-function M.draw(predicates, constants)
-	if depth then
-		render.set_depth_mask(true)
-		render.enable_state(render.STATE_DEPTH_TEST)
-	else
-		render.set_depth_mask(false)
-		render.disable_state(render.STATE_DEPTH_TEST)
-	end
-
-	if stencil then
-		render.set_stencil_mask(0xff)
-		render.enable_state(render.STATE_STENCIL_TEST)
-	else
-		render.disable_state(render.STATE_STENCIL_TEST)
-	end
-
-	render.disable_state(render.STATE_CULL_FACE)
-
-	render.enable_state(render.STATE_BLEND)
-	render.set_blend_func(render.BLEND_SRC_ALPHA, render.BLEND_ONE_MINUS_SRC_ALPHA)
-
-	render.enable_render_target(render_target)
-	for _,pred in ipairs(predicates) do
-		render.draw(pred, constants)
-	end
-	render.disable_render_target(render_target)
-end
-
-
-
+-- draw one or more render target to the Lumiere quad
+-- the render targets will be set as textures and drawn
+-- using the provided material
 function M.draw_render_targets(render_targets, material)
 	material = material or M.MATERIAL_COPY
 	
@@ -100,23 +82,11 @@ function M.draw_render_targets(render_targets, material)
 end
 
 
-function M.create_quad(predicate)
-	assert(predicate, "You must provide a predicate")
-	local instance = {}
-
-	function instance.clear(color, depth, stencil)
-		M.clear(color, depth, stencil)
-	end
-
-	return instance
-end
-
-
-
-
-
-
-
+-- create a render target
+-- @param name
+-- @param color
+-- @param depth
+-- @param stencil
 function M.create_render_target(name, color, depth, stencil)
 	assert(name, "You must specify a name")
 
@@ -126,8 +96,15 @@ function M.create_render_target(name, color, depth, stencil)
 		depth = depth,
 		stencil = stencil,
 		render_target = nil,
+		constants = {},
 	}
 
+	local blend_mode = {
+		source_factor = render.BLEND_SRC_ALPHA,
+		dest_factor = render.BLEND_ONE_MINUS_SRC_ALPHA,
+	}
+
+	-- initialize/create render target
 	local function init(width, height)
 		instance.width = width
 		instance.height = height
@@ -173,9 +150,8 @@ function M.create_render_target(name, color, depth, stencil)
 			[render.BUFFER_STENCIL_BIT] = stencil_params,
 		})
 	end
-	
 
-
+	-- update the render target if the width or height has changed
 	function instance.update()
 		local window_width = render.get_window_width()
 		local window_height = render.get_window_height()
@@ -186,13 +162,30 @@ function M.create_render_target(name, color, depth, stencil)
 		end
 	end
 
+	-- clear the render target with a color, depth and stencil
+	-- depending on render target settings
 	function instance.clear(clear_color, clear_depth, clear_stencil)
 		render.enable_render_target(instance.render_target)
 		M.clear(color and clear_color, depth and clear_depth, stencil and clear_stencil)
 		render.disable_render_target(instance.render_target)
 	end
 
-	function instance.draw(predicates, constants)
+	-- set a render constant
+	function instance.constant(key, value)
+		assert(key, "You must provide a constant key")
+		instance.constants[key] = value
+	end
+
+	-- set blend mode
+	function instance.blend_mode(source_factor, dest_factor)
+		blend_mode.source_factor = source_factor
+		blend_mode.dest_factor = dest_factor
+	end
+
+	-- draw predicates to render target
+	function instance.draw(predicates)
+		assert(predicates, "You must provide a list of predicates")
+		-- enable/disable depth mask
 		if depth then
 			render.set_depth_mask(true)
 			render.enable_state(render.STATE_DEPTH_TEST)
@@ -201,25 +194,37 @@ function M.create_render_target(name, color, depth, stencil)
 			render.disable_state(render.STATE_DEPTH_TEST)
 		end
 
+		-- enable/disable stencil mask
 		if stencil then
 			render.set_stencil_mask(0xff)
 			render.enable_state(render.STATE_STENCIL_TEST)
 		else
 			render.disable_state(render.STATE_STENCIL_TEST)
 		end
-		
-		render.disable_state(render.STATE_CULL_FACE)
-		
-		render.enable_state(render.STATE_BLEND)
-		render.set_blend_func(render.BLEND_SRC_ALPHA, render.BLEND_ONE_MINUS_SRC_ALPHA)
 
+		-- disable polygon culling
+		render.disable_state(render.STATE_CULL_FACE)
+
+		-- set blend mode
+		render.enable_state(render.STATE_BLEND)
+		render.set_blend_func(blend_mode.source_factor, blend_mode.dest_factor)
+
+		-- create constant buffer
+		local constants = nil
+		if next(instance.constants) then
+			constants = render.constant_buffer()
+			for k,v in pairs(instance.constants) do
+				constants[k] = v
+			end
+		end
+
+		-- enable, render, disable
 		render.enable_render_target(instance.render_target)
 		for _,pred in ipairs(predicates) do
 			render.draw(pred, constants)
 		end
 		render.disable_render_target(instance.render_target)
 	end
-	
 
 	return instance
 end

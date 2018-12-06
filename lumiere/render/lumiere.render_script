@@ -28,21 +28,19 @@ function update(self)
 	render.set_viewport(0, 0, render.get_window_width(), render.get_window_height())
 
 	-- draw to world space
-	render.set_view(render_helper.world_view(self))
-	render.set_projection(render_helper.world_projection(self))
+	lumiere.set_view_projection(render_helper.world_view(self), render_helper.world_projection(self))
 
 	-- draw graphics
 	self.normal_rt.clear(BLACK)
 	self.normal_rt.draw({ self.tile_pred, self.particle_pred })
 
 	-- draw lights
-	local constants = render.constant_buffer()
-	constants.time = vmath.vector4(math.random(90, 100) / 100)
+	self.light_rt.constant("time", vmath.vector4(math.random(90, 100) / 100))
 	self.light_rt.clear(AMBIENT_LIGHT)
 	self.light_rt.draw({ self.light_pred }, constants)
 	
 	-- draw to quad
-	lumiere.set_identity_view_projection()
+	lumiere.set_view_projection()
 
 	-- combine graphics and lights
 	lumiere.clear(BLACK, nil, nil)
