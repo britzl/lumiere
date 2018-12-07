@@ -21,7 +21,7 @@ embedded_components {
 embedded_components {
   id: "light"
   type: "sprite"
-  data: "tile_set: \"/lumiere/assets/lights.atlas\"\n"
+  data: "tile_set: \"/examples/lights/assets/lights.atlas\"\n"
   "default_animation: \"light_mask\"\n"
   "material: \"/lumiere/materials/light.material\"\n"
   "blend_mode: BLEND_MODE_ADD\n"

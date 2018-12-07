@@ -1,3 +1,4 @@
+
 local M = {}
 
 assert(render, "You must require Lumiere from your render script")
@@ -12,15 +13,18 @@ local clear_buffers = {}
 local quad_pred = nil
 
 
+local USE_PROGRAM = hash("lumiere_use_program")
+local REMOVE_PROGRAM = hash("lumiere_remove_program")
+
+local programs = {}
+local current_program = nil
+
+
+
+
 M.MATERIAL_MIX = hash("mix")
 M.MATERIAL_COPY = hash("copy")
 M.MATERIAL_MULTIPLY = hash("multiply")
-
-function M.init()
-	width = render.get_window_width()
-	height = render.get_window_height()
-	quad_pred = render.predicate({ hash("lumiere_quad") })
-end
 
 
 -- call render.clear() with specified settings
@@ -40,6 +44,7 @@ function M.clear(color, depth, stencil)
 	end
 	render.clear(clear_buffers)
 end
+
 
 
 -- set view projection to specified matrices
@@ -162,6 +167,12 @@ function M.create_render_target(name, color, depth, stencil)
 		end
 	end
 
+	function instance.delete()
+		assert(instance.render_target, "Render target has already been deleted")
+		render.delete_render_target(instance.render_target)
+		instance.render_target = nil
+	end
+
 	-- clear the render target with a color, depth and stencil
 	-- depending on render target settings
 	function instance.clear(clear_color, clear_depth, clear_stencil)
@@ -227,6 +238,89 @@ function M.create_render_target(name, color, depth, stencil)
 	end
 
 	return instance
+end
+
+
+function M.init(self)
+	width = render.get_window_width()
+	height = render.get_window_height()
+	quad_pred = render.predicate({ hash("lumiere_quad") })
+end
+
+function M.final(self)
+	print("final", current_program, current_program.final)
+	if current_program.final then
+		current_program.final(current_program.context)
+	end
+end
+
+function M.update(self)
+	if current_program.update then
+		current_program.update(current_program.context)
+	end
+end
+
+
+function M.on_message(self, message_id, message, sender)
+	if message_id == USE_PROGRAM then
+		local id = message.id
+		assert(id, "You must provide a program id")
+		assert(programs[id], "You must provide a valid program id")
+		if current_program == programs[id] then
+			print("Program already in use")
+			return
+		end
+		if current_program and current_program.final then
+			current_program.final(current_program.context)
+		end
+		current_program = programs[id]
+		if current_program.init then
+			current_program.init(current_program.context)
+		end
+	elseif message_id == REMOVE_PROGRAM then
+		local id = message.id
+		assert(id, "You must provide a program id")
+		assert(programs[id], "You must provide a valid program id")
+		if current_program == programs[id] then
+			current_program.final(current_program.context)
+			current_program = programs["default"]
+		end
+		programs[id] = nil
+	elseif current_program.on_message then
+		current_program.on_message(current_program.context, message_id, message, sender)
+	end
+end
+
+function M.on_reload(self)
+	if current_program.on_reload then
+		current_program.on_reload(current_program.context)
+	end
+end
+
+function M.add_program(id, program)
+	assert(id, "You must provide a program id")
+	assert(program and type(program) == "table", "You must provide a program")
+	programs[id] = {
+		id = id,
+		context = {},
+		init = program.init,
+		update = program.update,
+		final = program.final,
+		on_message = program.on_message,
+		on_reload = program.on_reload,
+	}
+end
+
+function M.use_program(id)
+	assert(id, "You must provide a program id")
+	assert(programs[id], "You must provide a valid program id")
+	msg.post("@render:", USE_PROGRAM, { id = id })
+end
+
+function M.remove_program(id)
+	assert(id, "You must provide a program id")
+	assert(programs[id], "You must provide a valid program id")
+	msg.post("@render:", REMOVE_PROGRAM, { id = id })
 end
 
 
