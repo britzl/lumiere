@@ -10,15 +10,19 @@ local AMBIENT_LIGHT = vmath.vector4(0.1, 0.1, 0.1, 1.0)
 function PRG.init(self)
 	render_helper.init(self)
 
-	self.tile_pred = render.predicate({"tile"})
-	self.gui_pred = render.predicate({"gui"})
-	self.text_pred = render.predicate({"text"})
-	self.particle_pred = render.predicate({"particle"})
+	if not self.predicates then
+		self.predicates = {}
+		self.predicates.tile = render.predicate({"tile"})
+		self.predicates.gui = render.predicate({"gui"})
+		self.predicates.text = render.predicate({"text"})
+		self.predicates.particle = render.predicate({"particle"})
+		self.predicates.grain = render.predicate({ hash("grain") })
+	end
 
 	self.normal_rt = lumiere.create_render_target("normal", true, false, false)
 
 	self.time = vmath.vector4()
-	self.grain_predicate = render.predicate({ hash("grain") })
+	
 end
 
 function PRG.final(self)
@@ -36,19 +40,19 @@ function PRG.update(self, dt)
 	-- draw graphics
 	lumiere.set_view_projection(render_helper.world_view(self), render_helper.world_projection(self))
 	self.normal_rt.clear(BLACK)
-	self.normal_rt.draw({ self.tile_pred, self.particle_pred })
+	self.normal_rt.draw({ self.predicates.tile, self.predicates.particle })
 
 	-- combine graphics and grain
 	lumiere.set_view_projection()
 	lumiere.clear(BLACK, nil, nil)
 	lumiere.set_constant("time", self.time)
-	lumiere.draw({ self.normal_rt }, self.grain_predicate)
+	lumiere.draw({ self.normal_rt }, self.predicates.grain)
 
 	-- draw gui
 	lumiere.set_view_projection(render_helper.screen_view(self), render_helper.screen_projection(self))
 	render.enable_state(render.STATE_STENCIL_TEST)
-	render.draw(self.gui_pred)
-	render.draw(self.text_pred)
+	render.draw(self.predicates.gui)
+	render.draw(self.predicates.text)
 	render.disable_state(render.STATE_STENCIL_TEST)
 end
 

@@ -75,13 +75,19 @@ function M.reset_constants()
 	end
 end
 
--- draw one or more render targets to the Lumiere quad
+
+function M.multiply(render_targets)
+	M.draw(render_targets, predicates.multiply[1])
+end
+
+-- draw one or more render targets to a quad
 -- the render targets will be set as textures and drawn
 -- using the provided material
 -- @param render_targets Array of render targets to draw
-function M.draw(render_targets, quad)
+-- @param quad_pred 
+function M.draw(render_targets, quad_pred)
 	assert(render_targets and #render_targets > 0, "You must provide at least one render target")
-	assert(quad, "You must provide a quad to draw")
+	assert(quad_pred, "You must provide a quad predicate to draw")
 
 	-- setup render state
 	render.set_depth_mask(false)
@@ -107,7 +113,7 @@ function M.draw(render_targets, quad)
 	end
 
 	-- draw it!
-	render.draw(quad, constant_buffer)
+	render.draw(quad_pred, constant_buffer)
 
 	-- disable material and texture(s)
 	for i=1,#render_targets do
@@ -223,9 +229,14 @@ function M.create_render_target(name, color, depth, stencil)
 		blend_mode.dest_factor = dest_factor
 	end
 
-
-	function instance.multiply(render_targets)
-		instance.draw(predicates.multiply, render_targets)
+	-- multiply render targets into this one
+	local multiply_render_targets = {}
+	function instance.multiply(render_target1, render_target2)
+		assert(render_target1, "You must provide a first render target")
+		assert(render_target2, "You must provide a second render target")
+		multiply_render_targets[1] = render_target1
+		multiply_render_targets[2] = render_target2
+		instance.draw(predicates.multiply, multiply_render_targets)
 	end
 
 	-- draw predicates to render target
@@ -264,25 +275,26 @@ function M.create_render_target(name, color, depth, stencil)
 			end
 		end
 
+		-- enable render target textures if provided
 		if render_targets then
 			for i=1,#render_targets do
 				render.enable_texture(i - 1, render_targets[i].render_target, render.BUFFER_COLOR_BIT)
 			end
 		end
 				
-		-- enable, render, disable
+		-- enable render target, render it and finally disable it again
 		render.set_render_target(instance.render_target)
 		for _,pred in ipairs(predicates) do
 			render.draw(pred, constants)
 		end
 		render.set_render_target(render.RENDER_TARGET_DEFAULT)
-		
+
+		-- disable render target textures
 		if render_targets then
 			for i=1,#render_targets do
 				render.disable_texture(i - 1)
 			end
 		end
-
 	end
 
 	return instance
