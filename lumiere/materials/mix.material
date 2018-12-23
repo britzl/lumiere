@@ -1,5 +1,5 @@
 name: "mix_quad"
-tags: "lumiere_quad"
+tags: "lumiere_mix"
 vertex_program: "/lumiere/materials/quad.vp"
 fragment_program: "/lumiere/materials/mix.fp"
 vertex_constants {

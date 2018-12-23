@@ -6,6 +6,7 @@ function init(self)
 
 	lumiere.add_program("default", default_program)
 	lumiere.use_program("default")
+	self.time = socket.gettime()
 end
 
 function final(self)
@@ -13,7 +14,10 @@ function final(self)
 end
 
 function update(self)
-	lumiere.update(self)
+	local now = socket.gettime()
+	local dt = now - self.time
+	lumiere.update(self, dt)
+	self.time = now
 end
 
 function on_message(self, message_id, message)

@@ -1,5 +1,5 @@
 name: "lumiere_quad"
-tags: "lumiere_quad"
+tags: "lumiere_copy"
 vertex_program: "/lumiere/materials/quad.vp"
 fragment_program: "/lumiere/materials/copy.fp"
 vertex_constants {

@@ -4,7 +4,7 @@ custom_resources =
 dependencies = https://github.com/britzl/defold-orthographic/archive/2.6.0.zip
 
 [bootstrap]
-main_collection = /examples/lights/lights.collectionc
+main_collection = /examples/examples.collectionc
 render = /lumiere/render/lumiere.renderc
 
 [input]

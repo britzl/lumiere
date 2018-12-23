@@ -1,5 +1,5 @@
 name: "multiply_quad"
-tags: "lumiere_quad"
+tags: "lumiere_multiply"
 vertex_program: "/lumiere/materials/quad.vp"
 fragment_program: "/lumiere/materials/multiply.fp"
 vertex_constants {

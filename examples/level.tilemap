@@ -1,4 +1,4 @@
-tile_set: "/examples/lights/assets/tiles.tilesource"
+tile_set: "/examples/assets/tiles.tilesource"
 layers {
   id: "bg"
   z: -1.0

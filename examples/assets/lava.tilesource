@@ -1,12 +1,12 @@
-image: "/examples/lights/assets/images/torch.png"
-tile_width: 16
+image: "/examples/assets/images/lava.png"
+tile_width: 32
 tile_height: 32
 tile_margin: 0
 tile_spacing: 0
 collision: ""
 material_tag: "tile"
 animations {
-  id: "torch"
+  id: "lava"
   start_tile: 1
   end_tile: 3
   playback: PLAYBACK_LOOP_FORWARD
@@ -14,5 +14,5 @@ animations {
   flip_horizontal: 0
   flip_vertical: 0
 }
-extrude_borders: 0
+extrude_borders: 2
 inner_padding: 0

@@ -1,0 +1,11 @@
+local lumiere = require "lumiere.lumiere"
+local lights = require "examples.programs.lights"
+local grain = require "examples.programs.grain"
+local grainylight = require "examples.programs.grainylight"
+
+function init(self)
+	lumiere.add_program("lights", lights)
+	lumiere.add_program("grain", grain)
+	lumiere.add_program("grainylight", grainylight)
+	lumiere.use_program("grainylight")
+end

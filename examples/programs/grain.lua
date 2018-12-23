@@ -14,24 +14,22 @@ function PRG.init(self)
 	self.gui_pred = render.predicate({"gui"})
 	self.text_pred = render.predicate({"text"})
 	self.particle_pred = render.predicate({"particle"})
-	self.light_pred = render.predicate({"light"})
 
-	-- one render target for "normal" graphics and one for the lights
-	-- both have a color buffer but no depth or stencil buffer
 	self.normal_rt = lumiere.create_render_target("normal", true, false, false)
-	self.light_rt = lumiere.create_render_target("lights", true, false, false)
+
+	self.time = vmath.vector4()
+	self.grain_predicate = render.predicate({ hash("grain") })
 end
 
 function PRG.final(self)
 	self.normal_rt.delete()
-	self.light_rt.delete()
 end
 
-function PRG.update(self)
+function PRG.update(self, dt)
+	self.time.x = self.time.x + dt
 	render_helper.update(self)
 
 	self.normal_rt.update()
-	self.light_rt.update()
 
 	render.set_viewport(0, 0, render.get_window_width(), render.get_window_height())
 
@@ -39,17 +37,12 @@ function PRG.update(self)
 	lumiere.set_view_projection(render_helper.world_view(self), render_helper.world_projection(self))
 	self.normal_rt.clear(BLACK)
 	self.normal_rt.draw({ self.tile_pred, self.particle_pred })
-	
-	-- draw lights
-	lumiere.set_view_projection(render_helper.world_view(self), render_helper.world_projection(self))
-	self.light_rt.constant("time", vmath.vector4(math.random(90, 100) / 100))
-	self.light_rt.clear(AMBIENT_LIGHT)
-	self.light_rt.draw({ self.light_pred }, constants)
 
-	-- combine graphics and lights
+	-- combine graphics and grain
 	lumiere.set_view_projection()
 	lumiere.clear(BLACK, nil, nil)
-	lumiere.draw_render_targets({ self.normal_rt, self.light_rt }, lumiere.MATERIAL_MULTIPLY)
+	lumiere.set_constant("time", self.time)
+	lumiere.draw({ self.normal_rt }, self.grain_predicate)
 
 	-- draw gui
 	lumiere.set_view_projection(render_helper.screen_view(self), render_helper.screen_projection(self))
@@ -57,23 +50,10 @@ function PRG.update(self)
 	render.draw(self.gui_pred)
 	render.draw(self.text_pred)
 	render.disable_state(render.STATE_STENCIL_TEST)
-
-	
-	-- draw gui
---[[	render_helper.set_screen_view_projection(self)
-	render.enable_state(render.STATE_STENCIL_TEST)
-	render.draw(self.gui_pred)
-	render.draw(self.text_pred)
-	render.disable_state(render.STATE_STENCIL_TEST)--]]
-	--render.set_depth_mask(false)
 end
 
 function PRG.on_message(self, message_id, message, sender)
 	render_helper.on_message(self, message_id, message, sender)
 end
 
-
-function init(self)
-	lumiere.add_program("lights", PRG)
-	lumiere.use_program("lights")
-end
+return PRG

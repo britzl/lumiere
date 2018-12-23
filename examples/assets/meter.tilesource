@@ -1,4 +1,4 @@
-image: "/examples/lights/assets/images/meter.png"
+image: "/examples/assets/images/meter.png"
 tile_width: 28
 tile_height: 7
 tile_margin: 0

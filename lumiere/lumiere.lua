@@ -10,13 +10,20 @@ local IDENTITY = vmath.matrix4()
 
 local clear_buffers = {}
 
-local quad_pred = nil
-
-
 local USE_PROGRAM = hash("lumiere_use_program")
 local REMOVE_PROGRAM = hash("lumiere_remove_program")
 
+
+local predicates = {
+	multiply = nil,
+	copy = nil,
+	mix = nil,
+}
+
+local constants = {}
+
 local programs = {}
+
 local current_program = nil
 
 
@@ -28,20 +35,16 @@ M.MATERIAL_MULTIPLY = hash("multiply")
 
 
 -- call render.clear() with specified settings
-function M.clear(color, depth, stencil)
-	if color then
-		clear_buffers[render.BUFFER_COLOR_BIT] = color
-	end
-
+function M.clear(color, depth, stencil)	
 	if depth then
 		render.set_depth_mask(true)
-		clear_buffers[render.BUFFER_DEPTH_BIT] = depth
-	end
-
+	end	
 	if stencil then
 		render.set_stencil_mask(0xff)
-		clear_buffers[render.BUFFER_STENCIL_BIT] = stencil
 	end
+	clear_buffers[render.BUFFER_COLOR_BIT] = color or nil
+	clear_buffers[render.BUFFER_DEPTH_BIT] = depth or nil
+	clear_buffers[render.BUFFER_STENCIL_BIT] = stencil or nil
 	render.clear(clear_buffers)
 end
 
@@ -60,30 +63,57 @@ function M.set_identity_view_projection()
 	render.set_projection(IDENTITY)
 end
 
+-- set a constant that will be passed 
+function M.set_constant(key, value)
+	assert(key, "You must provide a constant key")
+	constants[key] = value
+end
 
--- draw one or more render target to the Lumiere quad
+function M.reset_constants()
+	for k,v in pairs(constants) do
+		constants[k] = nil
+	end
+end
+
+-- draw one or more render targets to the Lumiere quad
 -- the render targets will be set as textures and drawn
 -- using the provided material
-function M.draw_render_targets(render_targets, material)
-	material = material or M.MATERIAL_COPY
-	
+-- @param render_targets Array of render targets to draw
+function M.draw(render_targets, quad)
+	assert(render_targets and #render_targets > 0, "You must provide at least one render target")
+	assert(quad, "You must provide a quad to draw")
+
+	-- setup render state
 	render.set_depth_mask(false)
 	render.disable_state(render.STATE_DEPTH_TEST)
 	render.disable_state(render.STATE_STENCIL_TEST)
 	render.disable_state(render.STATE_CULL_FACE)
-
 	render.enable_state(render.STATE_BLEND)
 	render.set_blend_func(render.BLEND_SRC_ALPHA, render.BLEND_ONE_MINUS_SRC_ALPHA)
 
-	render.enable_material(material)
+	-- enable material and texture(s)
+	--render.enable_material(material)
 	for i=1,#render_targets do
 		render.enable_texture(i - 1, render_targets[i].render_target, render.BUFFER_COLOR_BIT)
 	end
-	render.draw(quad_pred)
-	for i=1,#render_targets do
-		render.disable_texture(i - 1, render_targets[i].render_target, render.BUFFER_COLOR_BIT)
+
+	-- create constant buffer
+	local constant_buffer = nil
+	if next(constants) then
+		constant_buffer = render.constant_buffer()
+		for k,v in pairs(constants) do
+			constant_buffer[k] = v
+		end
 	end
-	render.disable_material()
+
+	-- draw it!
+	render.draw(quad, constant_buffer)
+
+	-- disable material and texture(s)
+	for i=1,#render_targets do
+		render.disable_texture(i - 1)
+	end
+	--render.disable_material()
 end
 
 
@@ -176,13 +206,13 @@ function M.create_render_target(name, color, depth, stencil)
 	-- clear the render target with a color, depth and stencil
 	-- depending on render target settings
 	function instance.clear(clear_color, clear_depth, clear_stencil)
-		render.enable_render_target(instance.render_target)
+		render.set_render_target(instance.render_target)
 		M.clear(color and clear_color, depth and clear_depth, stencil and clear_stencil)
-		render.disable_render_target(instance.render_target)
+		render.set_render_target(render.RENDER_TARGET_DEFAULT)
 	end
 
 	-- set a render constant
-	function instance.constant(key, value)
+	function instance.set_constant(key, value)
 		assert(key, "You must provide a constant key")
 		instance.constants[key] = value
 	end
@@ -193,8 +223,13 @@ function M.create_render_target(name, color, depth, stencil)
 		blend_mode.dest_factor = dest_factor
 	end
 
+
+	function instance.multiply(render_targets)
+		instance.draw(predicates.multiply, render_targets)
+	end
+
 	-- draw predicates to render target
-	function instance.draw(predicates)
+	function instance.draw(predicates, render_targets)
 		assert(predicates, "You must provide a list of predicates")
 		-- enable/disable depth mask
 		if depth then
@@ -229,12 +264,25 @@ function M.create_render_target(name, color, depth, stencil)
 			end
 		end
 
+		if render_targets then
+			for i=1,#render_targets do
+				render.enable_texture(i - 1, render_targets[i].render_target, render.BUFFER_COLOR_BIT)
+			end
+		end
+				
 		-- enable, render, disable
-		render.enable_render_target(instance.render_target)
+		render.set_render_target(instance.render_target)
 		for _,pred in ipairs(predicates) do
 			render.draw(pred, constants)
 		end
-		render.disable_render_target(instance.render_target)
+		render.set_render_target(render.RENDER_TARGET_DEFAULT)
+		
+		if render_targets then
+			for i=1,#render_targets do
+				render.disable_texture(i - 1)
+			end
+		end
+
 	end
 
 	return instance
@@ -244,7 +292,9 @@ end
 function M.init(self)
 	width = render.get_window_width()
 	height = render.get_window_height()
-	quad_pred = render.predicate({ hash("lumiere_quad") })
+	predicates.multiply = { render.predicate({ hash("lumiere_multiply") }) }
+	predicates.mix = { render.predicate({ hash("lumiere_mix") }) }
+	predicates.copy = { render.predicate({ hash("lumiere_copy") }) }
 end
 
 function M.final(self)
@@ -254,9 +304,9 @@ function M.final(self)
 	end
 end
 
-function M.update(self)
+function M.update(self, dt)
 	if current_program.update then
-		current_program.update(current_program.context)
+		current_program.update(current_program.context, dt)
 	end
 end
 
