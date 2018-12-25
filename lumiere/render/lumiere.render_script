@@ -10,7 +10,7 @@ function init(self)
 end
 
 function final(self)
-	lumiere.final(self)
+	--lumiere.final(self)
 end
 
 function update(self)
