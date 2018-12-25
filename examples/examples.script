@@ -2,13 +2,15 @@ local lumiere = require "lumiere.lumiere"
 local lights = require "examples.programs.lights"
 local grain = require "examples.programs.grain"
 local grainylights = require "examples.programs.grainylights"
+local lcd = require "examples.programs.lcd"
 
 function init(self)
 	lumiere.add_program("lights", lights)
 	lumiere.add_program("grain", grain)
 	lumiere.add_program("grainylights", grainylights)
-
-	lumiere.use_program("grain")
+	lumiere.add_program("lcd", lcd)
+	
+	lumiere.use_program("lcd")
 
 	msg.post(".", "acquire_input_focus")
 end
@@ -22,6 +24,8 @@ function on_input(self, action_id, action)
 			lumiere.use_program("grain")
 		elseif action_id == hash("prg3") then
 			lumiere.use_program("grainylights")
+		elseif action_id == hash("prg4") then
+			lumiere.use_program("lcd")
 		end
 	end
 end

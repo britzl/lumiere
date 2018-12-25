@@ -11,7 +11,7 @@ function PRG.init(self)
 
 	self.predicates_tile = lumiere.predicate({"tile"})
 	self.predicates_particle = lumiere.predicate({"particle"})
-	self.predicates_grain = lumiere.predicate({ hash("grain") })
+	self.predicates_lcd = lumiere.predicate({ hash("lcd") })
 
 	self.normal_rt = lumiere.create_render_target("normal", true, false, false)
 end
@@ -30,17 +30,18 @@ function PRG.update(self, dt)
 	lumiere.enable_render_target(self.normal_rt)
 	lumiere.clear(BLACK)
 	lumiere.draw(self.predicates_tile, self.predicates_particle)
+	lumiere.draw_gui(render_helper.screen_view(self), render_helper.screen_projection(self))
 	lumiere.disable_render_target()
 
 	-- draw graphics to screen and apply grain
 	lumiere.set_view_projection()
 	lumiere.set_constant("time", lumiere.time())
 	lumiere.enable_texture(0, self.normal_rt)
-	lumiere.draw(self.predicates_grain)
+	lumiere.draw(self.predicates_lcd)
 	lumiere.disable_texture(0)
 
 	-- draw gui
-	lumiere.draw_gui(render_helper.screen_view(self), render_helper.screen_projection(self))
+	--lumiere.draw_gui(render_helper.screen_view(self), render_helper.screen_projection(self))
 end
 
 function PRG.on_message(self, message_id, message, sender)

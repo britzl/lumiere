@@ -28,11 +28,17 @@ local render_targets = {}
 local current_program = nil
 local current_render_target = nil
 
+local time = 0
+local time_v4 = vmath.vector4()
+
 
 M.MATERIAL_MIX = hash("mix")
 M.MATERIAL_COPY = hash("copy")
 M.MATERIAL_MULTIPLY = hash("multiply")
 
+function M.time()
+	return time_v4
+end
 
 -- enable a render target
 function M.enable_render_target(render_target)
@@ -127,6 +133,15 @@ function M.multiply(render_target1, render_target2)
 	render.disable_texture(1)
 end
 
+-- draw gui
+function M.draw_gui(view, projection)
+	render.set_view(view or IDENTITY)
+	render.set_projection(projection or vmath.matrix4_orthographic(0, render.get_window_width(), 0, render.get_window_height(), -1, 1))
+	render.enable_state(render.STATE_STENCIL_TEST)
+	render.draw(predicates.gui)
+	render.draw(predicates.text)
+	render.disable_state(render.STATE_STENCIL_TEST)
+end
 
 -- draw the specified predicates
 function M.draw(...)
@@ -262,12 +277,6 @@ function M.create_render_target(name, color, depth, stencil)
 		end
 	end
 
-	function instance.delete()
-		assert(instance.handle, "Render target has already been deleted")
-		render.delete_render_target(instance.handle)
-		instance.handle = nil
-	end
-
 	return instance
 end
 
@@ -316,6 +325,9 @@ function M.init(self)
 	predicates.multiply = render.predicate({ hash("lumiere_multiply") })
 	predicates.mix = render.predicate({ hash("lumiere_mix") })
 	predicates.copy = render.predicate({ hash("lumiere_copy") })
+	predicates.gui = render.predicate({ hash("gui") })
+	predicates.text = render.predicate({ hash("text") })
+	time = socket.gettime()
 end
 
 function M.final(self)
@@ -325,12 +337,17 @@ function M.final(self)
 end
 
 function M.update(self, dt)
+	local now = socket.gettime()
+	local dt = now - time
+	time_v4.x = time_v4.x + dt
+
 	for _,render_target in pairs(render_targets) do
 		render_target.update()
 	end
 	if current_program.update then
 		current_program.update(current_program.context, dt)
 	end
+	time = now
 end
 
 

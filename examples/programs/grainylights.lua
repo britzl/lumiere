@@ -9,19 +9,14 @@ local AMBIENT_LIGHT = vmath.vector4(0.1, 0.1, 0.1, 1.0)
 function PRG.init(self)
 	render_helper.init(self)
 
-	self.predicates = self.predicates or {}
-	self.predicates.tile = lumiere.predicate({"tile"})
-	self.predicates.gui = lumiere.predicate({"gui"})
-	self.predicates.text = lumiere.predicate({"text"})
-	self.predicates.particle = lumiere.predicate({"particle"})
-	self.predicates.light = lumiere.predicate({"light"})
-	self.predicates.grain = lumiere.predicate({"grain"})
+	self.predicates_tile = lumiere.predicate({"tile"})
+	self.predicates_particle = lumiere.predicate({"particle"})
+	self.predicates_light = lumiere.predicate({"light"})
+	self.predicates_grain = lumiere.predicate({"grain"})
 
 	self.normal_rt = lumiere.create_render_target("normal", true, false, false)
 	self.lights_rt = lumiere.create_render_target("lights", true, false, false)
 	self.applied_lights_rt = lumiere.create_render_target("applied_lights", true, false, false)
-	
-	self.time = vmath.vector4()
 end
 
 function PRG.final(self)
@@ -31,7 +26,6 @@ function PRG.final(self)
 end
 
 function PRG.update(self, dt)
-	self.time.x = self.time.x + dt
 	render_helper.update(self)
 
 	render.set_viewport(0, 0, render.get_window_width(), render.get_window_height())
@@ -40,7 +34,7 @@ function PRG.update(self, dt)
 	lumiere.set_view_projection(render_helper.world_view(self), render_helper.world_projection(self))
 	lumiere.enable_render_target(self.normal_rt)
 	lumiere.clear(BLACK)
-	lumiere.draw(self.predicates.tile, self.predicates.particle)
+	lumiere.draw(self.predicates_tile, self.predicates_particle)
 	lumiere.disable_render_target()
 	
 	-- draw lights
@@ -48,7 +42,7 @@ function PRG.update(self, dt)
 	lumiere.enable_render_target(self.lights_rt)
 	lumiere.set_constant("time", vmath.vector4(math.random(90, 100) / 100))
 	lumiere.clear(AMBIENT_LIGHT)
-	lumiere.draw(self.predicates.light)
+	lumiere.draw(self.predicates_light)
 	lumiere.disable_render_target()
 	
 	-- combine graphics and lights
@@ -61,18 +55,14 @@ function PRG.update(self, dt)
 	-- draw combined graphics and lights to screen and apply grain filter
 	lumiere.set_view_projection()
 	lumiere.clear(BLACK)
-	lumiere.set_constant("time", self.time)
+	--lumiere.set_constant("time", lumiere.time())
 	lumiere.enable_texture(0, self.applied_lights_rt)
-	lumiere.draw(self.predicates.grain)
+	lumiere.draw(self.predicates_grain)
 	lumiere.disable_texture(0)
 	lumiere.reset_constants()
 
 	-- draw gui
-	lumiere.set_view_projection(render_helper.screen_view(self), render_helper.screen_projection(self))
-	render.enable_state(render.STATE_STENCIL_TEST)
-	render.draw(self.predicates.gui)
-	render.draw(self.predicates.text)
-	render.disable_state(render.STATE_STENCIL_TEST)
+	lumiere.draw_gui(render_helper.screen_view(self), render_helper.screen_projection(self))
 end
 
 function PRG.on_message(self, message_id, message, sender)
