@@ -35,9 +35,11 @@ function PRG.update(self, dt)
 	-- draw graphics to screen and apply grain
 	lumiere.set_view_projection()
 	lumiere.set_constant("time", lumiere.time())
+	lumiere.clear(BLACK)
 	lumiere.enable_texture(0, self.normal_rt)
 	lumiere.draw(self.predicates_grain)
 	lumiere.disable_texture(0)
+	lumiere.reset_constant("time")
 
 	-- draw gui
 	lumiere.draw_gui(render_helper.screen_view(self), render_helper.screen_projection(self))

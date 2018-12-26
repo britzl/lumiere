@@ -2,12 +2,12 @@ varying mediump vec4 position;
 varying mediump vec2 var_texcoord0;
 
 uniform lowp sampler2D DIFFUSE_TEXTURE;
-uniform lowp vec4 tint;
+uniform lowp vec4 window_size;
 
 // https://www.shadertoy.com/view/ltscDB
 void main()
 {
-	vec2 fragCoord = vec2(var_texcoord0.x * 1136.0, var_texcoord0.y * 640.0);
+	vec2 fragCoord = vec2(var_texcoord0.x * window_size.x, var_texcoord0.y * window_size.y);
 	vec2 uv = var_texcoord0.xy;
 
 	// Map texture to 0-1 space

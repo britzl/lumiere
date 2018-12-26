@@ -23,7 +23,7 @@ fragment_constants {
   }
 }
 fragment_constants {
-  name: "time"
+  name: "intensity"
   type: CONSTANT_TYPE_USER
   value {
     x: 1.0

@@ -40,10 +40,11 @@ function PRG.update(self, dt)
 	-- draw lights
 	lumiere.set_view_projection(render_helper.world_view(self), render_helper.world_projection(self))
 	lumiere.enable_render_target(self.lights_rt)
-	lumiere.set_constant("time", vmath.vector4(math.random(90, 100) / 100))
+	lumiere.set_constant("intensity", vmath.vector4(math.random(90, 100) / 100))
 	lumiere.clear(AMBIENT_LIGHT)
 	lumiere.draw(self.predicates_light)
 	lumiere.disable_render_target()
+	lumiere.reset_constant("intensity")
 	
 	-- combine graphics and lights
 	lumiere.set_view_projection()
@@ -55,11 +56,11 @@ function PRG.update(self, dt)
 	-- draw combined graphics and lights to screen and apply grain filter
 	lumiere.set_view_projection()
 	lumiere.clear(BLACK)
-	--lumiere.set_constant("time", lumiere.time())
+	lumiere.set_constant("time", lumiere.time())
 	lumiere.enable_texture(0, self.applied_lights_rt)
 	lumiere.draw(self.predicates_grain)
 	lumiere.disable_texture(0)
-	lumiere.reset_constants()
+	lumiere.reset_constant("time")
 
 	-- draw gui
 	lumiere.draw_gui(render_helper.screen_view(self), render_helper.screen_projection(self))

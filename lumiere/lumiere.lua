@@ -30,6 +30,7 @@ local current_render_target = nil
 
 local time = 0
 local time_v4 = vmath.vector4()
+local window_size = vmath.vector4(0, 0, width, height)
 
 
 M.MATERIAL_MIX = hash("mix")
@@ -38,6 +39,10 @@ M.MATERIAL_MULTIPLY = hash("multiply")
 
 function M.time()
 	return time_v4
+end
+
+function M.window_size()
+	return window_size
 end
 
 -- enable a render target
@@ -340,6 +345,11 @@ function M.update(self, dt)
 	local now = socket.gettime()
 	local dt = now - time
 	time_v4.x = time_v4.x + dt
+
+	width = render.get_window_width()
+	height = render.get_window_height()
+	window_size.x = width
+	window_size.y = height
 
 	for _,render_target in pairs(render_targets) do
 		render_target.update()

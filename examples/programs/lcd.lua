@@ -24,7 +24,7 @@ function PRG.update(self, dt)
 	render_helper.update(self)
 
 	render.set_viewport(0, 0, render.get_window_width(), render.get_window_height())
-
+	
 	-- draw graphics to a render target
 	lumiere.set_view_projection(render_helper.world_view(self), render_helper.world_projection(self))
 	lumiere.enable_render_target(self.normal_rt)
@@ -33,15 +33,14 @@ function PRG.update(self, dt)
 	lumiere.draw_gui(render_helper.screen_view(self), render_helper.screen_projection(self))
 	lumiere.disable_render_target()
 
-	-- draw graphics to screen and apply grain
+	-- draw graphics to screen and apply lcd effect
 	lumiere.set_view_projection()
-	lumiere.set_constant("time", lumiere.time())
 	lumiere.enable_texture(0, self.normal_rt)
+	lumiere.clear(BLACK)
+	lumiere.set_constant("window_size", lumiere.window_size())
 	lumiere.draw(self.predicates_lcd)
 	lumiere.disable_texture(0)
-
-	-- draw gui
-	--lumiere.draw_gui(render_helper.screen_view(self), render_helper.screen_projection(self))
+	lumiere.reset_constant("window_size")
 end
 
 function PRG.on_message(self, message_id, message, sender)

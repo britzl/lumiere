@@ -39,13 +39,15 @@ function PRG.update(self, dt)
 	-- draw lights to a render target
 	lumiere.set_view_projection(render_helper.world_view(self), render_helper.world_projection(self))
 	lumiere.enable_render_target(self.light_rt)
-	lumiere.set_constant("time", vmath.vector4(math.random(90, 100) / 100))
+	lumiere.set_constant("intensity", vmath.vector4(math.random(90, 100) / 100))
 	lumiere.clear(AMBIENT_LIGHT)
 	lumiere.draw(self.predicates_light)
 	lumiere.disable_render_target()
+	lumiere.reset_constant("intensity")
 
 	-- combine graphics and lights on screen
 	lumiere.set_view_projection()
+	lumiere.clear(BLACK)
 	lumiere.multiply(self.normal_rt, self.light_rt)
 
 	-- draw gui
