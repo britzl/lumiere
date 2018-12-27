@@ -1,6 +1,6 @@
 components {
   id: "fireballspawner"
-  component: "/examples/fireballspawner.script"
+  component: "/examples/scene/fireballspawner.script"
   position {
     x: 0.0
     y: 0.0
@@ -36,7 +36,7 @@ embedded_components {
 embedded_components {
   id: "factory"
   type: "factory"
-  data: "prototype: \"/examples/fireball.go\"\n"
+  data: "prototype: \"/examples/scene/fireball.go\"\n"
   "load_dynamically: false\n"
   ""
   position {
@@ -56,7 +56,7 @@ embedded_components {
   type: "sprite"
   data: "tile_set: \"/examples/assets/lights.atlas\"\n"
   "default_animation: \"light_mask\"\n"
-  "material: \"/examples/materials/light.material\"\n"
+  "material: \"/examples/effects/lights/lightsource.material\"\n"
   "blend_mode: BLEND_MODE_ADD\n"
   ""
   position {

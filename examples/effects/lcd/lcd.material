@@ -1,7 +1,7 @@
 name: "lcd"
 tags: "lcd"
-vertex_program: "/examples/materials/lcd.vp"
-fragment_program: "/examples/materials/lcd.fp"
+vertex_program: "/examples/effects/lcd/lcd.vp"
+fragment_program: "/examples/effects/lcd/lcd.fp"
 vertex_constants {
   name: "view_proj"
   type: CONSTANT_TYPE_VIEWPROJ

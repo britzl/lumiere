@@ -1,7 +1,7 @@
 name: "examples"
 instances {
   id: "torch1"
-  prototype: "/examples/torch.go"
+  prototype: "/examples/scene/torch.go"
   position {
     x: 361.0
     y: 64.0
@@ -21,7 +21,7 @@ instances {
 }
 instances {
   id: "torch2"
-  prototype: "/examples/torch.go"
+  prototype: "/examples/scene/torch.go"
   position {
     x: 239.0
     y: 64.0
@@ -41,7 +41,7 @@ instances {
 }
 instances {
   id: "lava1"
-  prototype: "/examples/lava.go"
+  prototype: "/examples/scene/lava.go"
   position {
     x: 288.0
     y: 16.0
@@ -61,7 +61,7 @@ instances {
 }
 instances {
   id: "lava2"
-  prototype: "/examples/lava.go"
+  prototype: "/examples/scene/lava.go"
   position {
     x: 320.0
     y: 16.0
@@ -124,7 +124,7 @@ instances {
 }
 instances {
   id: "gem1"
-  prototype: "/examples/gem.go"
+  prototype: "/examples/scene/gem.go"
   position {
     x: 97.0
     y: 57.0
@@ -202,78 +202,132 @@ instances {
     z: 1.0
   }
 }
+instances {
+  id: "grain"
+  prototype: "/examples/effects/grain/grain.go"
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "lights"
+  prototype: "/examples/effects/lights/lights.go"
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "lcd"
+  prototype: "/examples/effects/lcd/lcd.go"
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "chromatical"
+  prototype: "/examples/effects/chromatical/chromatical.go"
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "chromatic_aberration"
+  prototype: "/examples/effects/chromatic_aberration/chromatic_aberration.go"
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "scanlines"
+  prototype: "/examples/effects/scanlines/scanlines.go"
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
 scale_along_z: 0
 embedded_instances {
   id: "examples"
   data: "components {\n"
   "  id: \"examples\"\n"
   "  component: \"/examples/examples.script\"\n"
-  "  position {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "  }\n"
-  "  rotation {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "    w: 1.0\n"
-  "  }\n"
-  "}\n"
-  "embedded_components {\n"
-  "  id: \"grain\"\n"
-  "  type: \"model\"\n"
-  "  data: \"mesh: \\\"/lumiere/assets/quad.dae\\\"\\n"
-  "material: \\\"/examples/materials/grain.material\\\"\\n"
-  "skeleton: \\\"\\\"\\n"
-  "animations: \\\"\\\"\\n"
-  "default_animation: \\\"\\\"\\n"
-  "name: \\\"unnamed\\\"\\n"
-  "\"\n"
-  "  position {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "  }\n"
-  "  rotation {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "    w: 1.0\n"
-  "  }\n"
-  "}\n"
-  "embedded_components {\n"
-  "  id: \"lights\"\n"
-  "  type: \"model\"\n"
-  "  data: \"mesh: \\\"/lumiere/assets/quad.dae\\\"\\n"
-  "material: \\\"/lumiere/materials/multiply.material\\\"\\n"
-  "skeleton: \\\"\\\"\\n"
-  "animations: \\\"\\\"\\n"
-  "default_animation: \\\"\\\"\\n"
-  "name: \\\"unnamed\\\"\\n"
-  "\"\n"
-  "  position {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "  }\n"
-  "  rotation {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "    w: 1.0\n"
-  "  }\n"
-  "}\n"
-  "embedded_components {\n"
-  "  id: \"scanlines\"\n"
-  "  type: \"model\"\n"
-  "  data: \"mesh: \\\"/lumiere/assets/quad.dae\\\"\\n"
-  "material: \\\"/examples/materials/lcd.material\\\"\\n"
-  "skeleton: \\\"\\\"\\n"
-  "animations: \\\"\\\"\\n"
-  "default_animation: \\\"\\\"\\n"
-  "name: \\\"unnamed\\\"\\n"
-  "\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"
@@ -336,7 +390,7 @@ embedded_instances {
   id: "level"
   data: "components {\n"
   "  id: \"level\"\n"
-  "  component: \"/examples/level.tilemap\"\n"
+  "  component: \"/examples/scene/level.tilemap\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"
@@ -371,7 +425,7 @@ embedded_instances {
   id: "hud"
   data: "components {\n"
   "  id: \"hud\"\n"
-  "  component: \"/examples/hud.gui\"\n"
+  "  component: \"/examples/scene/hud.gui\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"

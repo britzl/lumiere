@@ -1,46 +1,33 @@
 local lumiere = require "lumiere.lumiere"
 local render_helper = require "orthographic.render.helper"
+local graphics2d = require "examples.effects.graphics2d"
+local lcd = require "examples.effects.lcd.lcd"
 
 local PRG = {}
-
-local BLACK = vmath.vector4(0)
 
 
 function PRG.init(self)
 	render_helper.init(self)
-
-	self.predicates_tile = lumiere.predicate({"tile"})
-	self.predicates_particle = lumiere.predicate({"particle"})
-	self.predicates_lcd = lumiere.predicate({ hash("lcd") })
-
-	self.normal_rt = lumiere.create_render_target("normal", true, false, false)
+	lcd.init()
+	graphics2d.init()
 end
 
 function PRG.final(self)
-	lumiere.delete_render_target(self.normal_rt)
+	lcd.final()
+	graphics2d.final()
 end
+
 
 function PRG.update(self, dt)
 	render_helper.update(self)
 
 	render.set_viewport(0, 0, render.get_window_width(), render.get_window_height())
-	
-	-- draw graphics to a render target
-	lumiere.set_view_projection(render_helper.world_view(self), render_helper.world_projection(self))
-	lumiere.enable_render_target(self.normal_rt)
-	lumiere.clear(BLACK)
-	lumiere.draw(self.predicates_tile, self.predicates_particle)
-	lumiere.draw_gui(render_helper.screen_view(self), render_helper.screen_projection(self))
-	lumiere.disable_render_target()
 
-	-- draw graphics to screen and apply lcd effect
-	lumiere.set_view_projection()
-	lumiere.enable_texture(0, self.normal_rt)
-	lumiere.clear(BLACK)
-	lumiere.set_constant("window_size", lumiere.window_size())
-	lumiere.draw(self.predicates_lcd)
-	lumiere.disable_texture(0)
-	lumiere.reset_constant("window_size")
+	lumiere.set_view_projection(render_helper.world_view(self), render_helper.world_projection(self))
+
+	graphics2d.update()
+	lcd.apply(graphics2d.render_target())
+	lumiere.draw_gui(render_helper.screen_view(self), render_helper.screen_projection(self))
 end
 
 function PRG.on_message(self, message_id, message, sender)

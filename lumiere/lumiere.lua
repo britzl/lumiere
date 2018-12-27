@@ -8,6 +8,11 @@ local height = tonumber(sys.get_config("display.height"))
 
 local IDENTITY = vmath.matrix4()
 
+-- colors
+M.BLACK = vmath.vector4(0,0,0,1.0)
+M.TRANSPARENT = vmath.vector4(0)
+
+
 -- messages
 local USE_PROGRAM = hash("lumiere_use_program")
 local REMOVE_PROGRAM = hash("lumiere_remove_program")
@@ -29,25 +34,30 @@ local current_program = nil
 local current_render_target = nil
 
 local time = 0
-local time_v4 = vmath.vector4()
-local window_size = vmath.vector4(0, 0, width, height)
+local const_time = vmath.vector4()
+local const_window_size = vmath.vector4(0, 0, width, height)
 
 
 M.MATERIAL_MIX = hash("mix")
 M.MATERIAL_COPY = hash("copy")
 M.MATERIAL_MULTIPLY = hash("multiply")
 
+local function log(...)
+	--print(...)
+end
+
 function M.time()
-	return time_v4
+	return const_time
 end
 
 function M.window_size()
-	return window_size
+	return const_window_size
 end
 
 -- enable a render target
 function M.enable_render_target(render_target)
 	assert(render_target, "You must provide a render target")
+	--log("enable_render_target", render_target.name)
 	current_render_target = render_target
 	render.set_render_target(render_target.handle)
 	return M
@@ -55,6 +65,8 @@ end
 
 -- disable the current render target
 function M.disable_render_target()
+	assert(current_render_target, "There is no enabled render target to disable")
+	--log("disable_render_target", current_render_target.name)
 	current_render_target = nil
 	render.set_render_target(render.RENDER_TARGET_DEFAULT)
 	return M
@@ -140,12 +152,19 @@ end
 
 -- draw gui
 function M.draw_gui(view, projection)
-	render.set_view(view or IDENTITY)
-	render.set_projection(projection or vmath.matrix4_orthographic(0, render.get_window_width(), 0, render.get_window_height(), -1, 1))
+	if view then render.set_view(view) end
+	if projection then render.set_projection(projection) end
 	render.enable_state(render.STATE_STENCIL_TEST)
 	render.draw(predicates.gui)
 	render.draw(predicates.text)
 	render.disable_state(render.STATE_STENCIL_TEST)
+end
+
+function M.draw_graphics2d(view, projection)
+	if view then render.set_view(view) end
+	if projection then render.set_projection(projection) end
+	render.draw(predicates.tile)
+	render.draw(predicates.particle)
 end
 
 -- draw the specified predicates
@@ -218,10 +237,17 @@ function M.create_render_target(name, color, depth, stencil)
 		},
 	}
 
+	log("create_render_target", name)
+	log("RENDER TARGETS:")
+	for k,v in pairs(render_targets) do
+		log("  ", k)
+	end
 	render_targets[name] = instance
 
+	
 	-- initialize/create render target
 	local function init(width, height)
+		log("init render_target", name)
 		instance.width = width
 		instance.height = height
 
@@ -288,6 +314,7 @@ end
 --  delete a render target
 function M.delete_render_target(render_target)
 	assert(render_target, "You must provide a render target")
+	log("delete_render_target", render_target.name)
 	render.delete_render_target(render_target.handle)
 	render_targets[render_target.name] = nil
 end
@@ -332,6 +359,8 @@ function M.init(self)
 	predicates.copy = render.predicate({ hash("lumiere_copy") })
 	predicates.gui = render.predicate({ hash("gui") })
 	predicates.text = render.predicate({ hash("text") })
+	predicates.tile = render.predicate({ hash("tile") })
+	predicates.particle = render.predicate({ hash("particle") })
 	time = socket.gettime()
 end
 
@@ -344,20 +373,27 @@ end
 function M.update(self, dt)
 	local now = socket.gettime()
 	local dt = now - time
-	time_v4.x = time_v4.x + dt
+	time = now
+	
+	-- update time constant
+	const_time.x = const_time.x + dt
+	const_time.y = dt;
 
+	-- update window size constant
 	width = render.get_window_width()
 	height = render.get_window_height()
-	window_size.x = width
-	window_size.y = height
+	const_window_size.x = width
+	const_window_size.y = height
 
+	-- update all render targets (check resize)
 	for _,render_target in pairs(render_targets) do
 		render_target.update()
 	end
+
+	-- update current program
 	if current_program.update then
 		current_program.update(current_program.context, dt)
 	end
-	time = now
 end
 
 
@@ -366,15 +402,19 @@ function M.on_message(self, message_id, message, sender)
 		local id = message.id
 		assert(id, "You must provide a program id")
 		assert(programs[id], "You must provide a valid program id")
+		log("USE_PROGRAM", id)
 		if current_program == programs[id] then
 			print("Program already in use")
 			return
 		end
 		if current_program and current_program.final then
+			log("calling final on current_program", current_program.id)
 			current_program.final(current_program.context)
 		end
 		current_program = programs[id]
+		current_program.id = id
 		if current_program.init then
+			log("calling init on current_program", current_program.id)
 			current_program.init(current_program.context)
 		end
 	elseif message_id == REMOVE_PROGRAM then
