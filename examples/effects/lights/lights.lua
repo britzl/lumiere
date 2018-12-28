@@ -33,7 +33,7 @@ function M.apply(input, output)
 
 	if output then lumiere.enable_render_target(output) end
 
-	lumiere.set_view_projection()
+	lumiere.set_identity_view_projection()
 	lumiere.clear(lumiere.BLACK)
 	lumiere.enable_texture(0, RT)
 	lumiere.enable_texture(1, input)
