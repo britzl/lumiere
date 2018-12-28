@@ -37,6 +37,7 @@ local time = 0
 local const_time = vmath.vector4()
 local const_window_size = vmath.vector4(0, 0, width, height)
 
+local viewport = nil
 
 M.MATERIAL_MIX = hash("mix")
 M.MATERIAL_COPY = hash("copy")
@@ -72,6 +73,16 @@ function M.disable_render_target()
 	return M
 end
 
+
+function M.set_viewport(x, y, w, h)
+	if not x then
+		viewport = nil
+		render.set_viewport(0, 0, width, height)
+	else
+		viewport = vmath.vector4(x, y, w, h)
+		render.set_viewport(x, y, w, h)
+	end
+end
 
 -- set view projection to specified matrices
 function M.set_view_projection(view, projection)
@@ -385,6 +396,12 @@ function M.update(self, dt)
 	const_window_size.x = width
 	const_window_size.y = height
 
+	if viewport then
+		render.set_viewport(viewport.x, viewport.y, viewport.z, viewport.w)
+	else
+		render.set_viewport(0, 0, width, height)
+	end
+	
 	-- update all render targets (check resize)
 	for _,render_target in pairs(render_targets) do
 		render_target.update()

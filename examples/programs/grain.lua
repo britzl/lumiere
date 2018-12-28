@@ -1,6 +1,6 @@
 local lumiere = require "lumiere.lumiere"
 local render_helper = require "orthographic.render.helper"
-local graphics2d = require "examples.effects.graphics2d"
+local graphics2d = require "examples.programs.utils.graphics2d"
 local grain = require "examples.effects.grain.grain"
 
 local PRG = {}
@@ -18,8 +18,6 @@ end
 
 function PRG.update(self, dt)
 	render_helper.update(self)
-
-	render.set_viewport(0, 0, render.get_window_width(), render.get_window_height())
 
 	lumiere.set_view_projection(render_helper.world_view(self), render_helper.world_projection(self))
 	graphics2d.update()
