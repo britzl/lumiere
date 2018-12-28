@@ -16,7 +16,8 @@ M.TRANSPARENT = vmath.vector4(0)
 -- messages
 local USE_PROGRAM = hash("lumiere_use_program")
 local REMOVE_PROGRAM = hash("lumiere_remove_program")
-
+local SET_VIEW_PROJECTION = hash("set_view_projection")
+local CLEAR_COLOR = hash("clear_color")
 
 -- predicates creates using lumiere.predicate()
 local predicates = {
@@ -24,6 +25,8 @@ local predicates = {
 	copy = nil,
 	mix = nil,
 }
+
+local clear_color = vmath.vector4()
 
 -- for use with lumiere.clear()
 local clear_buffers = {}
@@ -47,7 +50,13 @@ local time = 0
 local const_time = vmath.vector4()
 local const_window_size = vmath.vector4(0, 0, width, height)
 
-local viewport = nil
+
+
+local view_settings = {
+	viewport = nil,
+	view = vmath.matrix4(),
+	projection = vmath.matrix4_orthographic(0, width, 0, height, -1, 1),
+}
 
 M.MATERIAL_MIX = hash("mix")
 M.MATERIAL_COPY = hash("copy")
@@ -63,6 +72,10 @@ end
 
 function M.window_size()
 	return const_window_size
+end
+
+function M.clear_color()
+	return clear_color
 end
 
 -- enable a render target
@@ -86,18 +99,18 @@ end
 
 function M.set_viewport(x, y, w, h)
 	if not x then
-		viewport = nil
+		view_settings.viewport = nil
 		render.set_viewport(0, 0, width, height)
 	else
-		viewport = vmath.vector4(x, y, w, h)
+		view_settings.viewport = vmath.vector4(x, y, w, h)
 		render.set_viewport(x, y, w, h)
 	end
 end
 
 -- set view projection to specified matrices
 function M.set_view_projection(view, projection)
-	render.set_view(view or IDENTITY)
-	render.set_projection(projection or IDENTITY)
+	render.set_view(view or view_settings.view or IDENTITY)
+	render.set_projection(projection or view_settings.projection or IDENTITY)
 end
 
 
@@ -136,7 +149,7 @@ function M.clear(color, depth, stencil)
 	end
 	if depth then
 		render.set_depth_mask(true)
-	end	
+	end
 	if stencil then
 		render.set_stencil_mask(0xff)
 	end
@@ -184,8 +197,7 @@ end
 function M.draw_graphics2d(view, projection)
 	if view then render.set_view(view) end
 	if projection then render.set_projection(projection) end
-	render.draw(predicates.tile)
-	render.draw(predicates.particle)
+	M.draw(predicates.tile, predicates.particle)
 end
 
 -- draw the specified predicates
@@ -226,7 +238,7 @@ function M.draw(...)
 			constant_buffer[k] = v
 		end
 	end
-
+	
 	-- draw predicates
 	local count = select("#", ...)
 	for i=1,count do
@@ -251,66 +263,69 @@ function M.create_render_target(name, color, depth, stencil)
 		depth = depth,
 		stencil = stencil,
 		handle = nil,
-		constants = {},
 		blend_mode = {
 			source_factor = render.BLEND_SRC_ALPHA,
 			dest_factor = render.BLEND_ONE_MINUS_SRC_ALPHA,
 		},
 	}
 
-	log("create_render_target", name)
-	log("RENDER TARGETS:")
-	for k,v in pairs(render_targets) do
-		log("  ", k)
-	end
 	render_targets[name] = instance
 
-	
+	local color_params = nil
+	if color then
+		local config = type(color) == "table" and color or nil
+		color_params = {
+			format = config and config.format or render.FORMAT_RGBA,
+			min_filter = config and config.min_filter or render.FILTER_LINEAR,
+			mag_filter = config and config.mag_filter or render.FILTER_LINEAR,
+			u_wrap = config and config.u_wrap or render.WRAP_CLAMP_TO_EDGE,
+			v_wrap = config and config.v_wrap or render.WRAP_CLAMP_TO_EDGE
+		}
+	end
+
+	local depth_params = nil
+	if depth then
+		local config = type(depth) == "table" and depth or nil
+		depth_params = {
+			format = config and config.format or render.FORMAT_DEPTH,
+			u_wrap = config and config.u_wrap or render.WRAP_CLAMP_TO_EDGE,
+			v_wrap = config and config.v_wrap or render.WRAP_CLAMP_TO_EDGE
+		}
+	end
+
+	local stencil_params = nil
+	if stencil then
+		local config = type(stencil) == "table" and stencil or nil
+		stencil_params = {
+			format = config and config.format or render.FORMAT_STENCIL,
+			u_wrap = config and config.u_wrap or render.WRAP_CLAMP_TO_EDGE,
+			v_wrap = config and config.v_wrap or render.WRAP_CLAMP_TO_EDGE
+		}
+	end
+
 	-- initialize/create render target
 	local function init(width, height)
 		log("init render_target", name)
 		instance.width = width
 		instance.height = height
 
-		local color_params = nil
-		if color then
-			color_params = { 
-				format = render.FORMAT_RGBA,
-				width = width,
-				height = height,
-				min_filter = render.FILTER_LINEAR,
-				mag_filter = render.FILTER_LINEAR,
-				u_wrap = render.WRAP_CLAMP_TO_EDGE,
-				v_wrap = render.WRAP_CLAMP_TO_EDGE
-			}
+		if color_params then
+			color_params.width = width
+			color_params.height = height
 		end
-
-		local depth_params = nil
-		if depth then
-			depth_params = {
-				format = render.FORMAT_DEPTH,
-				width = width,
-				height = height,
-				u_wrap = render.WRAP_CLAMP_TO_EDGE,
-				v_wrap = render.WRAP_CLAMP_TO_EDGE
-			}
+		if depth_params then
+			depth_params.width = width
+			depth_params.height = height
 		end
-
-		local stencil_params = nil
-		if stencil then
-			stencil_params = {
-				format = render.FORMAT_STENCIL,
-				width = width,
-				height = height,
-				u_wrap = render.WRAP_CLAMP_TO_EDGE,
-				v_wrap = render.WRAP_CLAMP_TO_EDGE
-			}
+		if stencil_params then
+			stencil_params.width = width
+			stencil_params.height = height
 		end
 
 		if instance.handle then
 			render.delete_render_target(instance.handle)
 		end
-		
+
 		instance.handle = render.render_target(name, {
 			[render.BUFFER_COLOR_BIT] = color_params,
 			[render.BUFFER_DEPTH_BIT] = depth_params,
@@ -382,6 +397,10 @@ function M.init(self)
 	predicates.text = render.predicate({ hash("text") })
 	predicates.tile = render.predicate({ hash("tile") })
 	predicates.particle = render.predicate({ hash("particle") })
+	clear_color.x = sys.get_config("render.clear_color_red", 0)
+	clear_color.y = sys.get_config("render.clear_color_green", 0)
+	clear_color.z = sys.get_config("render.clear_color_blue", 0)
+	clear_color.w = sys.get_config("render.clear_color_alpha", 0)
 	time = socket.gettime()
 end
 
@@ -395,7 +414,7 @@ function M.update(self, dt)
 	local now = socket.gettime()
 	local dt = now - time
 	time = now
-	
+
 	-- update time constant
 	const_time.x = const_time.x + dt
 	const_time.y = dt;
@@ -406,12 +425,13 @@ function M.update(self, dt)
 	const_window_size.x = width
 	const_window_size.y = height
 
+	local viewport = view_settings.viewport
 	if viewport then
 		render.set_viewport(viewport.x, viewport.y, viewport.z, viewport.w)
 	else
 		render.set_viewport(0, 0, width, height)
 	end
-	
+
 	-- update all render targets (check resize)
 	for _,render_target in pairs(render_targets) do
 		render_target.update()
@@ -453,8 +473,16 @@ function M.on_message(self, message_id, message, sender)
 			current_program = programs["default"]
 		end
 		programs[id] = nil
-	elseif current_program.on_message then
-		current_program.on_message(current_program.context, message_id, message, sender)
+	else
+		if message_id == SET_VIEW_PROJECTION then
+			view_settings.view = message.view
+			view_settings.projection = message.projection
+		elseif message_id == CLEAR_COLOR then
+			clear_color = message.color
+		end
+		if current_program.on_message then
+			current_program.on_message(current_program.context, message_id, message, sender)
+		end
 	end
 end
 
