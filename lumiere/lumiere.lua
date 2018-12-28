@@ -18,19 +18,29 @@ local USE_PROGRAM = hash("lumiere_use_program")
 local REMOVE_PROGRAM = hash("lumiere_remove_program")
 
 
--- data structures
+-- predicates creates using lumiere.predicate()
 local predicates = {
 	multiply = nil,
 	copy = nil,
 	mix = nil,
 }
 
+-- for use with lumiere.clear()
 local clear_buffers = {}
+
+-- constants set using lumiere.set_constant()
 local constants = {}
+
+-- programs added using lumiere.add_program()
 local programs = {}
+
+-- render targets created using lumiere.create_render_target()
 local render_targets = {}
 
+-- the currently used program
 local current_program = nil
+
+-- the currently enabled render target
 local current_render_target = nil
 
 local time = 0
