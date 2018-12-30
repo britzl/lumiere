@@ -3,12 +3,14 @@ local lights = require "examples.programs.lights"
 local grain = require "examples.programs.grain"
 local lcd = require "examples.programs.lcd"
 local combo = require "examples.programs.combo"
+local basic = require "examples.programs.basic"
 
 function init(self)
 	lumiere.add_program("lights", lights)
 	lumiere.add_program("grain", grain)
 	lumiere.add_program("combo", combo)
 	lumiere.add_program("lcd", lcd)
+	lumiere.add_program("basic", basic)
 	
 	lumiere.use_program("lights")
 
@@ -28,6 +30,8 @@ function on_input(self, action_id, action)
 			lumiere.use_program("lcd")
 		elseif action_id == hash("prg5") then
 			lumiere.use_program("combo")
+		elseif action_id == hash("prg6") then
+			lumiere.use_program("basic")
 		end
 	end
 end

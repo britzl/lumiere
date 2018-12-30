@@ -18,6 +18,10 @@ key_trigger {
   input: KEY_5
   action: "prg5"
 }
+key_trigger {
+  input: KEY_6
+  action: "prg6"
+}
 mouse_trigger {
   input: MOUSE_BUTTON_1
   action: "touch"

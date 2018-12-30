@@ -12,12 +12,66 @@ Or point to the ZIP file of a [specific release](https://github.com/britzl/lumie
 Using Lumiere requires that `lumiere/lumiere.render` is set as the renderer in `game.project` in the Bootstrap section. Once this is done Lumiere can be used to swap out the default render script functionality with your own custom render pipeline, either as a one time thing at startup or any number of times while the game is running.
 
 # Programs
-Programs are essentially the contents of a render script that can easily be interchanged at run-time. Programs can be added and removed and a single program is active at any given time.
+Programs are essentially the contents of a render script that can easily be interchanged at run-time. Programs can be added and removed and a single program is active at any given time. The most basic program similar to the default render script looks like this:
 
+	local lumiere = require "lumiere.lumiere"
 
+	local PRG = {}
+
+	function PRG.update(self, dt)
+		lumiere.clear(lumiere.clear_color())
+		lumiere.set_view_projection()
+		lumiere.draw_graphics2d(view, projection)
+		lumiere.set_identity_view_projection()
+		lumiere.draw_gui()
+	end
+
+	return PRG
+
+A program is added to and used by Lumiere through the `lumiere.add_program()` and `lumiere.use_program()` functions:
+
+	local lumiere = require "lumiere.lumiere"
+	local my_program = require "foobar.my_program"
+
+	function init(self)
+		lumiere.add_program("my_program", my_program)
+		lumiere.use_program("my_program")
+	end
+
+If Lumiere is used without a custom program it will behave exactly like the default render script. The default program can be found in `lumiere.programs.default.lua`.
+
+You create your own program by creating a Lua module with public functions that mirrors the Defold lifecycle functions (remove any function that you don't need):
+
+	local PRG = {}
+
+	function PRG.init(self)
+		-- add any setup code here
+	end
+
+	function PRG.final(self)
+		-- add any cleanup code here
+	end
+
+	function PRG.update(self, dt)
+		-- add render code here to draw every frame
+	end
+
+	function PRG.on_message(self, message_id, message, sender)
+		-- messages sent to the render script will be forwarded here
+	end
+
+	function PRG.on_reload(self)
+		-- callback when the render script is reloaded
+	end
+
+	function PRG.init(self)
+	end
+
+The lifecycle functions can mix normal `render.*` functions with `lumiere.*` API functions (see below for a full API specification).
 
 
 # API
+The Lumiere API functions typically wrap the normal `render.*` functions and in some ways simplify them.
 
 ### lumiere.create_render_target(name, color, depth, stencil)
 Create a Lumiere render target with the specified buffers.
