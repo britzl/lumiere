@@ -4,7 +4,7 @@ varying mediump vec2 var_texcoord0;
 uniform lowp sampler2D DIFFUSE_TEXTURE;
 uniform lowp vec4 tint;
 uniform lowp vec4 time;
-uniform lowp vec4 window_size;
+uniform lowp vec4 resolution;
 
 // https://www.shadertoy.com/view/XdXXD4
 void main()
@@ -29,7 +29,7 @@ void main()
 	col.b = texture2D(DIFFUSE_TEXTURE, vec2(uv.x-blur,uv.y) ).b;
 
 	// scanline
-	float scanline = sin(uv.y*window_size.y)*0.04;
+	float scanline = sin(uv.y*resolution.y)*0.04;
 	col -= scanline;
 
 	// vignette

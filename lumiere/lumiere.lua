@@ -48,7 +48,7 @@ local current_render_target = nil
 
 local time = 0
 local const_time = vmath.vector4()
-local const_window_size = vmath.vector4(0, 0, width, height)
+local const_resolution = vmath.vector4(0, 0, width, height)
 
 
 
@@ -70,8 +70,8 @@ function M.time()
 	return const_time
 end
 
-function M.window_size()
-	return const_window_size
+function M.resolution()
+	return const_resolution
 end
 
 function M.clear_color()
@@ -422,8 +422,8 @@ function M.update(self, dt)
 	-- update window size constant
 	width = render.get_window_width()
 	height = render.get_window_height()
-	const_window_size.x = width
-	const_window_size.y = height
+	const_resolution.x = width
+	const_resolution.y = height
 
 	local viewport = view_settings.viewport
 	if viewport then

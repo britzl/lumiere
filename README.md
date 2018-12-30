@@ -9,7 +9,7 @@ https://github.com/britzl/lumiere/archive/master.zip
 Or point to the ZIP file of a [specific release](https://github.com/britzl/lumiere/releases).
 
 # Usage
-Using Lumiere requires that `lumiere/lumiere.render` is set as the renderer in `game.project` in the Bootstrap section. Once this is done Lumiere can be used to swap out the default render script functionality with your own custom render pipeline, either as a one time thing at startup or any number of times while the game is running.
+Using Lumiere requires that `lumiere/lumiere.render` is set as the renderer in `game.project` in the Bootstrap section. Once this is done Lumiere can be used to swap out the default render script functionality with your own custom render pipeline, either as a one time thing at startup or any number of times while the game is running. The interchangeable part of the render script is called a program.
 
 # Programs
 Programs are essentially the contents of a render script that can easily be interchanged at run-time. Programs can be added and removed and a single program is active at any given time. The most basic program similar to the default render script looks like this:
@@ -162,11 +162,11 @@ Get current time (for use as a shader constant)
 * `time` (vector4) Time (x = time in seconds, y = delta time)
 
 
-### lumiere.window_size()
-Get the current window size (for use as a shader constant)
+### lumiere.resolution()
+Get the current resolution (for use as a shader constant)
 
 **RETURN**
-* `window_size` (vector4) Window size (x = width, y = height)
+* `resolution` (vector4) Resolution (x = width, y = height, z = original width, w = original height)
 
 
 ### lumiere.clear(color, depth, stencil)

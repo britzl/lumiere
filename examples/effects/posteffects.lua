@@ -38,7 +38,6 @@ function M.create(...)
 			if effect.final then effect.final() end
 		end
 	end
-		
 
 	function instance.apply(render_target)
 		local count = #effects
