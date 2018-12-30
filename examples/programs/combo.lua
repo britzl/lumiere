@@ -1,6 +1,7 @@
 local lumiere = require "lumiere.lumiere"
 local render_helper = require "orthographic.render.helper"
 local grain = require "examples.effects.grain.grain"
+local blur = require "examples.effects.blur.blur"
 local lights = require "examples.effects.lights.lights"
 local graphics2d = require "examples.programs.utils.graphics2d"
 local lcd = require "examples.effects.lcd.lcd"
@@ -15,7 +16,7 @@ function PRG.init(self)
 	render_helper.init(self)
 	graphics2d.init()
 
-	self.posteffect = posteffects.create(lights, grain, chromatic_aberration, scanlines)
+	self.posteffect = posteffects.create(lights, blur, grain, chromatic_aberration, scanlines)
 	posteffects.init(self.posteffect)
 end
 
