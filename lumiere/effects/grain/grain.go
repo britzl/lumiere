@@ -2,7 +2,7 @@ embedded_components {
   id: "model"
   type: "model"
   data: "mesh: \"/lumiere/assets/quad.dae\"\n"
-  "material: \"/examples/effects/chromatical/chromatical.material\"\n"
+  "material: \"/lumiere/effects/grain/grain.material\"\n"
   "skeleton: \"\"\n"
   "animations: \"\"\n"
   "default_animation: \"\"\n"

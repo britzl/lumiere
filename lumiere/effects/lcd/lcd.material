@@ -1,7 +1,7 @@
-name: "scanlines"
-tags: "scanlines"
-vertex_program: "/examples/effects/scanlines/scanlines.vp"
-fragment_program: "/examples/effects/scanlines/scanlines.fp"
+name: "lcd"
+tags: "lcd"
+vertex_program: "/lumiere/effects/lcd/lcd.vp"
+fragment_program: "/lumiere/effects/lcd/lcd.fp"
 vertex_constants {
   name: "view_proj"
   type: CONSTANT_TYPE_VIEWPROJ

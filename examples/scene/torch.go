@@ -23,7 +23,7 @@ embedded_components {
   type: "sprite"
   data: "tile_set: \"/examples/assets/lights.atlas\"\n"
   "default_animation: \"light_mask\"\n"
-  "material: \"/examples/effects/lights/lightsource.material\"\n"
+  "material: \"/lumiere/effects/lights/lightsource.material\"\n"
   "blend_mode: BLEND_MODE_ADD\n"
   ""
   position {

@@ -204,7 +204,7 @@ instances {
 }
 instances {
   id: "grain"
-  prototype: "/examples/effects/grain/grain.go"
+  prototype: "/lumiere/effects/grain/grain.go"
   position {
     x: 0.0
     y: 0.0
@@ -224,7 +224,7 @@ instances {
 }
 instances {
   id: "lights"
-  prototype: "/examples/effects/lights/lights.go"
+  prototype: "/lumiere/effects/lights/lights.go"
   position {
     x: 0.0
     y: 0.0
@@ -244,7 +244,7 @@ instances {
 }
 instances {
   id: "lcd"
-  prototype: "/examples/effects/lcd/lcd.go"
+  prototype: "/lumiere/effects/lcd/lcd.go"
   position {
     x: 0.0
     y: 0.0
@@ -264,7 +264,7 @@ instances {
 }
 instances {
   id: "chromatical"
-  prototype: "/examples/effects/chromatical/chromatical.go"
+  prototype: "/lumiere/effects/chromatical/chromatical.go"
   position {
     x: 0.0
     y: 0.0
@@ -284,7 +284,7 @@ instances {
 }
 instances {
   id: "chromatic_aberration"
-  prototype: "/examples/effects/chromatic_aberration/chromatic_aberration.go"
+  prototype: "/lumiere/effects/chromatic_aberration/chromatic_aberration.go"
   position {
     x: 0.0
     y: 0.0
@@ -304,7 +304,7 @@ instances {
 }
 instances {
   id: "scanlines"
-  prototype: "/examples/effects/scanlines/scanlines.go"
+  prototype: "/lumiere/effects/scanlines/scanlines.go"
   position {
     x: 0.0
     y: 0.0
@@ -324,7 +324,7 @@ instances {
 }
 instances {
   id: "blur"
-  prototype: "/examples/effects/blur/blur.go"
+  prototype: "/lumiere/effects/blur/blur.go"
   position {
     x: 0.0
     y: 0.0

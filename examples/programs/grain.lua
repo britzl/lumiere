@@ -1,7 +1,7 @@
 local lumiere = require "lumiere.lumiere"
 local render_helper = require "orthographic.render.helper"
 local graphics2d = require "examples.programs.utils.graphics2d"
-local grain = require "examples.effects.grain.grain"
+local grain = require "lumiere.effects.grain.grain"
 
 local PRG = {}
 

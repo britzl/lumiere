@@ -1,14 +1,15 @@
 local lumiere = require "lumiere.lumiere"
 local render_helper = require "orthographic.render.helper"
-local grain = require "examples.effects.grain.grain"
-local blur = require "examples.effects.blur.blur"
-local lights = require "examples.effects.lights.lights"
 local graphics2d = require "examples.programs.utils.graphics2d"
-local lcd = require "examples.effects.lcd.lcd"
-local chromatical = require "examples.effects.chromatical.chromatical"
-local chromatic_aberration = require "examples.effects.chromatic_aberration.chromatic_aberration"
-local scanlines = require "examples.effects.scanlines.scanlines"
-local posteffects = require "examples.effects.posteffects"
+
+local grain = require "lumiere.effects.grain.grain"
+local blur = require "lumiere.effects.blur.blur"
+local lights = require "lumiere.effects.lights.lights"
+local lcd = require "lumiere.effects.lcd.lcd"
+local chromatical = require "lumiere.effects.chromatical.chromatical"
+local chromatic_aberration = require "lumiere.effects.chromatic_aberration.chromatic_aberration"
+local scanlines = require "lumiere.effects.scanlines.scanlines"
+local posteffects = require "lumiere.effects.posteffects"
 
 local PRG = {}
 
@@ -16,7 +17,7 @@ function PRG.init(self)
 	render_helper.init(self)
 	graphics2d.init()
 
-	self.posteffect = posteffects.create(lights, blur, grain, chromatic_aberration, scanlines)
+	self.posteffect = posteffects.create(lights, grain, chromatic_aberration, scanlines)
 	posteffects.init(self.posteffect)
 end
 
@@ -30,9 +31,7 @@ function PRG.update(self, dt)
 
 	lumiere.set_view_projection(render_helper.world_view(self), render_helper.world_projection(self))
 	graphics2d.update()
-
 	posteffects.apply(self.posteffect, graphics2d.render_target())
-
 	lumiere.draw_gui(render_helper.screen_view(self), render_helper.screen_projection(self))
 end
 

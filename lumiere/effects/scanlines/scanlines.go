@@ -2,7 +2,7 @@ embedded_components {
   id: "model"
   type: "model"
   data: "mesh: \"/lumiere/assets/quad.dae\"\n"
-  "material: \"/examples/effects/blur/blur.material\"\n"
+  "material: \"/lumiere/effects/scanlines/scanlines.material\"\n"
   "skeleton: \"\"\n"
   "animations: \"\"\n"
   "default_animation: \"\"\n"

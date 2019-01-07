@@ -2,7 +2,7 @@ embedded_components {
   id: "model"
   type: "model"
   data: "mesh: \"/lumiere/assets/quad.dae\"\n"
-  "material: \"/examples/effects/chromatic_aberration/chromatic_aberration.material\"\n"
+  "material: \"/lumiere/effects/chromatic_aberration/chromatic_aberration.material\"\n"
   "skeleton: \"\"\n"
   "animations: \"\"\n"
   "default_animation: \"\"\n"

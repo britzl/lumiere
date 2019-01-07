@@ -1,7 +1,7 @@
 name: "blur"
 tags: "blur"
-vertex_program: "/examples/effects/blur/blur.vp"
-fragment_program: "/examples/effects/blur/blur.fp"
+vertex_program: "/lumiere/effects/blur/blur.vp"
+fragment_program: "/lumiere/effects/blur/blur.fp"
 vertex_constants {
   name: "view_proj"
   type: CONSTANT_TYPE_VIEWPROJ

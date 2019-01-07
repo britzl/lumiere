@@ -1,7 +1,7 @@
 local lumiere = require "lumiere.lumiere"
 local render_helper = require "orthographic.render.helper"
 local graphics2d = require "examples.programs.utils.graphics2d"
-local lcd = require "examples.effects.lcd.lcd"
+local lcd = require "lumiere.effects.lcd.lcd"
 
 local PRG = {}
 
