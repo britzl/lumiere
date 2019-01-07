@@ -64,9 +64,6 @@ You create your own program by creating a Lua module with public functions that 
 		-- callback when the render script is reloaded
 	end
 
-	function PRG.init(self)
-	end
-
 The lifecycle functions can mix normal `render.*` functions with `lumiere.*` API functions (see below for a full API specification).
 
 
