@@ -3,17 +3,21 @@ local lumiere = require "lumiere.lumiere"
 local M = {}
 
 local AMBIENT_LIGHT = vmath.vector4(0.1, 0.1, 0.1, 1.0)
+local MIN_INTENSITY = 0.9
+local MAX_INTENSITY = 1.0
 
 function M.create(ambient_light, intensity_min, intensity_max)
 	local instance = {}
 	instance.ambient_light = ambient_light or AMBIENT_LIGHT
-	instance.intensity_min = intensity_min or 90
-	instance.intensity_max = intensity_max or 100
+	instance.intensity_min = intensity_min or MIN_INTENSITY
+	instance.intensity_max = intensity_max or MAX_INTENSITY
 
 	local render_target = nil
 	local lights_predicate = nil
 	local apply_lights_predicate = nil
-	
+
+	local intensity_v4 = vmath.vector4()
+
 	function instance.init()
 		assert(not RT)
 		lights_predicate = lumiere.predicate({ hash("light") })
@@ -27,8 +31,9 @@ function M.create(ambient_light, intensity_min, intensity_max)
 	end
 
 	function instance.update()
+		intensity_v4.x = instance.intensity_min + math.random() * (instance.intensity_max - instance.intensity_min)
 		lumiere.enable_render_target(render_target)
-		lumiere.set_constant("intensity", vmath.vector4(math.random(instance.intensity_min, instance.intensity_max) / 100))
+		lumiere.set_constant("intensity", intensity_v4)
 		lumiere.clear(instance.ambient_light)
 		lumiere.draw(lights_predicate)
 		lumiere.disable_render_target()
@@ -58,7 +63,7 @@ function M.create(ambient_light, intensity_min, intensity_max)
 	return instance
 end
 
-local singleton = M.create(AMBIENT_LIGHT)
+local singleton = M.create(AMBIENT_LIGHT, MIN_INTENSITY, MAX_INTENSITY)
 
 function M.init()
 	singleton.init()
