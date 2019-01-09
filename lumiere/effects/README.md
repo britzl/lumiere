@@ -68,6 +68,7 @@ You can also create your own effects and plug these into the effects system. A L
 	end
 
 	function M.update()
+		-- will be called once by the effect system before apply() is called
 	end
 
 	function M.apply(input, output)
