@@ -238,7 +238,7 @@ function M.draw(...)
 			constant_buffer[k] = v
 		end
 	end
-	
+
 	-- draw predicates
 	local count = select("#", ...)
 	for i=1,count do
@@ -356,6 +356,9 @@ function M.delete_render_target(render_target)
 end
 
 
+-- create a predicate
+-- this will cache the predicate and return the same one if requested more than
+-- once
 function M.predicate(tags)
 	for i,tag in ipairs(tags) do
 		tag = type(tag) == "string" and hash(tag) or tag
@@ -386,7 +389,7 @@ function M.predicate(tags)
 	return predicate.handle
 end
 
-
+-- initialize lumiere
 function M.init(self)
 	width = render.get_window_width()
 	height = render.get_window_height()
@@ -404,12 +407,14 @@ function M.init(self)
 	time = socket.gettime()
 end
 
+-- finalize lumiere
 function M.final(self)
 	if current_program.final then
 		current_program.final(current_program.context)
 	end
 end
 
+-- update lumiere
 function M.update(self, dt)
 	local now = socket.gettime()
 	local dt = now - time
@@ -443,7 +448,8 @@ function M.update(self, dt)
 	end
 end
 
-
+-- handle messages
+-- mainly switching of programs and handling default render messages
 function M.on_message(self, message_id, message, sender)
 	if message_id == USE_PROGRAM then
 		local id = message.id

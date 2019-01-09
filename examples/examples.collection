@@ -203,68 +203,8 @@ instances {
   }
 }
 instances {
-  id: "grain"
-  prototype: "/lumiere/effects/grain/grain.go"
-  position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale3 {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-  }
-}
-instances {
-  id: "lights"
-  prototype: "/lumiere/effects/lights/lights.go"
-  position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale3 {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-  }
-}
-instances {
-  id: "lcd"
-  prototype: "/lumiere/effects/lcd/lcd.go"
-  position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale3 {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-  }
-}
-instances {
-  id: "chromatical"
-  prototype: "/lumiere/effects/chromatical/chromatical.go"
+  id: "blur"
+  prototype: "/lumiere/effects/blur/blur.go"
   position {
     x: 0.0
     y: 0.0
@@ -303,8 +243,8 @@ instances {
   }
 }
 instances {
-  id: "scanlines"
-  prototype: "/lumiere/effects/scanlines/scanlines.go"
+  id: "chromatical"
+  prototype: "/lumiere/effects/chromatical/chromatical.go"
   position {
     x: 0.0
     y: 0.0
@@ -323,8 +263,68 @@ instances {
   }
 }
 instances {
-  id: "blur"
-  prototype: "/lumiere/effects/blur/blur.go"
+  id: "grain"
+  prototype: "/lumiere/effects/grain/grain.go"
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "lcd"
+  prototype: "/lumiere/effects/lcd/lcd.go"
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "lights"
+  prototype: "/lumiere/effects/lights/lights.go"
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+instances {
+  id: "scanlines"
+  prototype: "/lumiere/effects/scanlines/scanlines.go"
   position {
     x: 0.0
     y: 0.0
@@ -459,6 +459,33 @@ embedded_instances {
   "  }\n"
   "}\n"
   ""
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+embedded_instances {
+  id: "effects"
+  children: "blur"
+  children: "chromatic_aberration"
+  children: "chromatical"
+  children: "grain"
+  children: "lcd"
+  children: "lights"
+  children: "scanlines"
+  data: ""
   position {
     x: 0.0
     y: 0.0

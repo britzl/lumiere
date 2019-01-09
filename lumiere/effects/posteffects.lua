@@ -39,7 +39,7 @@ function M.create(...)
 		end
 	end
 
-	function instance.apply(render_target)
+	function instance.apply(input, output)
 		local count = #effects
 		for i=1,count do
 			local effect = effects[i]
@@ -47,11 +47,11 @@ function M.create(...)
 				effect.update()
 			end
 			if count == 1 then
-				effect.apply(render_target)
+				effect.apply(input, output)
 			elseif i == 1 then
-				effect.apply(render_target, rt1)
+				effect.apply(input, rt1)
 			elseif i == count then
-				effect.apply(rt1)
+				effect.apply(rt1, output)
 			else
 				effect.apply(rt1, rt2)
 				rt1, rt2 = rt2, rt1
@@ -75,11 +75,13 @@ function M.final(posteffect)
 	posteffect.final()
 end
 
---- apply a sequence of post effects to a render target
-function M.apply(posteffect, render_target)
+--- apply a sequence of post effects to a render target,
+-- optionally rendering it to a destination target, otherwise to
+-- the screen
+function M.apply(posteffect, input, output)
 	assert(posteffect, "You must provide a post effect")
-	assert(render_target, "You must provide a render target")
-	posteffect.apply(render_target)
+	assert(input, "You must provide a render target to apply effects to")
+	posteffect.apply(input, output)
 end
 
 
