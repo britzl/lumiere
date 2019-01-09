@@ -1,6 +1,12 @@
 # Blur
 Simple on-pass blur shader
 
+## Before
+![](doc/before.png)
+
+## After
+![](doc/after.png)
+
 # Usage
 You can use the effect as is or create a blur instance where the blur distance is configurable:
 
