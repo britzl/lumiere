@@ -38,7 +38,7 @@ A program is added to and used by Lumiere through the `lumiere.add_program()` an
 		lumiere.use_program("my_program")
 	end
 
-If Lumiere is used without a custom program it will behave exactly like the default render script. The default program can be found in `lumiere.programs.default.lua`.
+If Lumiere is used without a custom program it will behave exactly like the default render script. The default program can be found in [`lumiere/programs/default.lua`](lumiere/programs/default.lua).
 
 You create your own program by creating a Lua module with public functions that mirrors the Defold lifecycle functions (remove any function that you don't need):
 
