@@ -22,7 +22,7 @@ Programs are essentially the contents of a render script that can easily be inte
 		lumiere.clear(lumiere.clear_color())
 		lumiere.set_view_projection()
 		lumiere.draw_graphics2d(view, projection)
-		lumiere.set_identity_view_projection()
+		lumiere.set_identity_projection()
 		lumiere.draw_gui()
 	end
 
@@ -129,12 +129,16 @@ Set or clear the viewport. If the viewport is cleared it will automatically use 
 Set the view projection to use.
 
 **PARAMETERS**
-* `view` (matrix4) View to use. Will use identity if not specified.
-* `projection` (matrix4) Projection to use. Will use identity if not specified.
+* `view` (matrix4) View to use. Fallback to use view from `set_view_projection` message or identity if not specified.
+* `projection` (matrix4) Projection to use. Fallback to use projection from `set_view_projection` message or identity if not specified.
 
 
-### lumiere.set_identity_view_projection()
+### lumiere.set_identity_projection()
 Set the view and projection to identity matrices.
+
+
+### lumiere.set_screen_projection()
+Set the view and projection to screen space (identity view and screen space projection).
 
 
 ### lumiere.set_constant(key, value)

@@ -56,6 +56,7 @@ local view_settings = {
 	viewport = nil,
 	view = vmath.matrix4(),
 	projection = vmath.matrix4_orthographic(0, width, 0, height, -1, 1),
+	screen_projection = vmath.matrix4_orthographic(0, width, 0, height, -1, 1),
 }
 
 M.MATERIAL_MIX = hash("mix")
@@ -115,9 +116,15 @@ end
 
 
 -- set view projection to identity matrix
-function M.set_identity_view_projection()
+function M.set_identity_projection()
 	render.set_view(IDENTITY)
 	render.set_projection(IDENTITY)
+end
+
+-- set view projection to identity screen space
+function M.set_screen_projection()
+	render.set_view(IDENTITY)
+	render.set_projection(view_settings.screen_projection)
 end
 
 -- set a constant that will be passed to
@@ -425,10 +432,14 @@ function M.update(self, dt)
 	const_time.y = dt;
 
 	-- update window size constant
+	-- also update screen space projection if needed
 	width = render.get_window_width()
 	height = render.get_window_height()
-	const_resolution.x = width
-	const_resolution.y = height
+	if const_resolution.x ~= width or const_resolution.y ~= height then
+		view_settings.screen_space_projection = vmath.matrix4_orthographic(0, width, 0, height, -1, 1)
+		const_resolution.x = width
+		const_resolution.y = height
+	end
 
 	local viewport = view_settings.viewport
 	if viewport then

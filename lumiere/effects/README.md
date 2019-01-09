@@ -69,7 +69,7 @@ You can also create your own effects and plug these into the effects system. A L
 
 	function M.apply(input, output)
 		if output then lumiere.enable_render_target(output) end
-		lumiere.set_identity_view_projection()
+		lumiere.set_identity_projection()
 		lumiere.clear(lumiere.BLACK)
 		lumiere.set_constant("foobar", vmath.vector4(1,2,3,4))
 		lumiere.enable_texture(0, input)

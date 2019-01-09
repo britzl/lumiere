@@ -14,7 +14,7 @@ end
 function M.apply(input, output)
 	if output then lumiere.enable_render_target(output) end
 
-	lumiere.set_identity_view_projection()
+	lumiere.set_identity_projection()
 	lumiere.enable_texture(0, input)
 	lumiere.clear(lumiere.BLACK)
 	lumiere.set_constant("resolution", lumiere.resolution())

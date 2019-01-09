@@ -21,7 +21,7 @@ function M.create(distance)
 	function instance.apply(input, output)
 		distance_vector.x = instance.distance
 		if output then lumiere.enable_render_target(output) end
-		lumiere.set_identity_view_projection()
+		lumiere.set_identity_projection()
 		lumiere.clear(lumiere.BLACK)
 		lumiere.set_constant("resolution", lumiere.resolution())
 		lumiere.set_constant("distance", distance_vector)
