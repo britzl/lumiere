@@ -67,6 +67,10 @@ You create your own program by creating a Lua module with public functions that 
 The lifecycle functions can mix normal `render.*` functions with `lumiere.*` API functions (see below for a full API specification).
 
 
+# Effects
+Lumiere provides a system that makes it very easy to apply multiple post-effects to a game. This could be anything from lights or blur to scanlines and LCD effects. The system is completely optional and is not active by default. [Learn more about the post-effects system here](lumiere/effects/).
+
+
 # API
 The Lumiere API functions typically wrap the normal `render.*` functions and in some ways simplify them.
 

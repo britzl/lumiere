@@ -1,5 +1,5 @@
 # Effects
-Lumiere provides a system that makes it very easy to apply multiple post effects to a game. This could be anything from lights or blur to scanlines and LCD effects. The system is completely optional and is not active by default.
+Lumiere provides a system that makes it very easy to apply multiple post-effects to a game. This could be anything from lights or blur to scanlines and LCD effects. The system is completely optional and is not active by default.
 
 # Usage
 You use the effects system by creating a post-effect chain and apply it as part of your Lumiere program. The effects you add will be applied one by one with a render target as input:
