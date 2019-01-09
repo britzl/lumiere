@@ -15,3 +15,5 @@ You use the effect as is by adding it to a posteffect sequence:
 
 	-- use lcd with default settings
 	local lcd_effect = posteffects.create(lcd)
+
+You must also add `lcd.go` to an active collection.

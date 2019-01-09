@@ -22,3 +22,5 @@ You can use the effect as is or create a grain instance where the grain strength
 
 	-- strength can also be changed afterwards
 	custom_grain.strength = 4
+
+You must also add `grain.go` to an active collection.

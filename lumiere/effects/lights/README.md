@@ -29,3 +29,5 @@ You can use the effect as is or create a lights instance where the ambient light
 	lights_instance.max_intensity = 1.0
 
 This will if nothing else is changed result in ambient light being applied to the scene. To also have certain areas of the scene act as lightsources you also need to render lights in a separate pass. Assign the `lightsource.material` to anything that is supposed to act as a lightsource.
+
+You must also add `lights.go` to an active collection.

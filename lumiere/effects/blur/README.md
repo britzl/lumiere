@@ -22,3 +22,5 @@ You can use the effect as is or create a blur instance where the blur distance i
 
 	-- distance can also be changed afterwards
 	custom_blur.distance = 4
+
+You must also add `blur.go` to an active collection.

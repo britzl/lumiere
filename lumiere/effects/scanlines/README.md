@@ -15,3 +15,5 @@ You use the effect as is by adding it to a posteffect sequence:
 
 	-- use scanlines with default settings
 	local scanlines_effect = posteffects.create(scanlines)
+
+You must also add `scanlines.go` to an active collection.
