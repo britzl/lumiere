@@ -15,10 +15,10 @@ function M.create(distance)
 		predicate = lumiere.predicate({ hash("blur") })
 	end
 
-	function M.final()
+	function instance.final()
 	end
 
-	function M.apply(input, output)
+	function instance.apply(input, output)
 		distance_vector.x = instance.distance
 		if output then lumiere.enable_render_target(output) end
 		lumiere.set_identity_view_projection()
