@@ -46,7 +46,7 @@ Note: To use an effect you need to add it to a post effect sequence like in the 
 Lumiere provides a number of standard effects:
 
 * [Blur](blur/)
-* Grain
+* [Grain](grain/)
 * Lights
 * Chromatic Aberration
 * LCD
