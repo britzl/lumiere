@@ -1,5 +1,5 @@
 # Blur
-Simple on-pass blur shader
+Simple one-pass blur shader
 
 ## Before
 ![](../doc/original.png)
