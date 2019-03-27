@@ -22,9 +22,9 @@ function M.create(...)
 	instance_count = instance_count + 1
 
 	function instance.init()
-		rt1 = lumiere.create_render_target("posteffect_rt1_" .. tostring(instance_count), true, false, false)
+		rt1 = lumiere.create_render_target("posteffect_rt1_" .. tostring(instance_count), { color = true })
 		if #effects > 1 then
-			rt2 = lumiere.create_render_target("posteffect_rt2_" .. tostring(instance_count), true, false, false)
+			rt2 = lumiere.create_render_target("posteffect_rt2_" .. tostring(instance_count), { color = true })
 		end
 		for _,effect in ipairs(effects) do
 			if effect.init then effect.init() end

@@ -10,6 +10,7 @@ local IDENTITY = vmath.matrix4()
 
 -- colors
 M.BLACK = vmath.vector4(0,0,0,1.0)
+M.RED = vmath.vector4(1.0,0,0,0.1)
 M.TRANSPARENT = vmath.vector4(0)
 
 
@@ -257,18 +258,20 @@ end
 
 -- create a render target
 -- @param name
--- @param color
--- @param depth
--- @param stencil
-function M.create_render_target(name, color, depth, stencil)
+-- @param config Table with render target configuration values. Valid keys::
+--	color - True for defaults or color params table (or nil for none)
+--  depth - True for defaults or depth params table (or nil for none)
+--  stencil - True for defaults or stencil params table (or nil for none)
+function M.create_render_target(name, config)
 	assert(name, "You must specify a name")
 	assert(not render_targets[name], "There is already a render target with that name")
 
+	config = config or {}
 	local instance = {
 		name = name,
-		color = color,
-		depth = depth,
-		stencil = stencil,
+		color = config.color,
+		depth = config.depth,
+		stencil = config.stencil,
 		handle = nil,
 		blend_mode = {
 			source_factor = render.BLEND_SRC_ALPHA,
@@ -279,40 +282,40 @@ function M.create_render_target(name, color, depth, stencil)
 	render_targets[name] = instance
 
 	local color_params = nil
-	if color then
-		local config = type(color) == "table" and color or nil
+	if config.color then
+		local color_config = type(config.color) == "table" and config.color or nil
 		color_params = {
-			format = config and config.format or render.FORMAT_RGBA,
-			min_filter = config and config.min_filter or render.FILTER_LINEAR,
-			mag_filter = config and config.mag_filter or render.FILTER_LINEAR,
-			u_wrap = config and config.u_wrap or render.WRAP_CLAMP_TO_EDGE,
-			v_wrap = config and config.v_wrap or render.WRAP_CLAMP_TO_EDGE
+			format = color_config and color_config.format or render.FORMAT_RGBA,
+			min_filter = color_config and color_config.min_filter or render.FILTER_LINEAR,
+			mag_filter = color_config and color_config.mag_filter or render.FILTER_LINEAR,
+			u_wrap = color_config and color_config.u_wrap or render.WRAP_CLAMP_TO_EDGE,
+			v_wrap = color_config and color_config.v_wrap or render.WRAP_CLAMP_TO_EDGE
 		}
 	end
 
 	local depth_params = nil
-	if depth then
-		local config = type(depth) == "table" and depth or nil
+	if config.depth then
+		local depth_config = type(config.depth) == "table" and config.depth or nil
 		depth_params = {
-			format = config and config.format or render.FORMAT_DEPTH,
-			u_wrap = config and config.u_wrap or render.WRAP_CLAMP_TO_EDGE,
-			v_wrap = config and config.v_wrap or render.WRAP_CLAMP_TO_EDGE
+			format = depth_config and depth_config.format or render.FORMAT_DEPTH,
+			u_wrap = depth_config and depth_config.u_wrap or render.WRAP_CLAMP_TO_EDGE,
+			v_wrap = depth_config and depth_config.v_wrap or render.WRAP_CLAMP_TO_EDGE
 		}
 	end
 
 	local stencil_params = nil
-	if stencil then
-		local config = type(stencil) == "table" and stencil or nil
+	if config.stencil then
+		local stencil_config = type(config.stencil) == "table" and config.stencil or nil
 		stencil_params = {
-			format = config and config.format or render.FORMAT_STENCIL,
-			u_wrap = config and config.u_wrap or render.WRAP_CLAMP_TO_EDGE,
-			v_wrap = config and config.v_wrap or render.WRAP_CLAMP_TO_EDGE
+			format = stencil_config and stencil_config.format or render.FORMAT_STENCIL,
+			u_wrap = stencil_config and stencil_config.u_wrap or render.WRAP_CLAMP_TO_EDGE,
+			v_wrap = stencil_config and stencil_config.v_wrap or render.WRAP_CLAMP_TO_EDGE
 		}
 	end
 
 	-- initialize/create render target
 	local function init(width, height)
-		log("init render_target", name)
+		log("init render_target", name, width, height)
 		instance.width = width
 		instance.height = height
 
@@ -342,12 +345,12 @@ function M.create_render_target(name, color, depth, stencil)
 
 	-- update the render target if the width or height has changed
 	function instance.update()
-		local window_width = render.get_window_width()
-		local window_height = render.get_window_height()
+		local width = config.width or render.get_window_width()
+		local height = config.height or render.get_window_height()
 
 		-- recreate render targets if screen size has changed
-		if instance.width ~= window_width or instance.height ~= window_height then
-			init(window_width, window_height)
+		if instance.width ~= width or instance.height ~= height then
+			init(width, height)
 		end
 	end
 

@@ -74,14 +74,20 @@ Lumiere provides a system that makes it very easy to apply multiple post-effects
 # API
 The Lumiere API functions typically wrap the normal `render.*` functions and in some ways simplify them.
 
-### lumiere.create_render_target(name, color, depth, stencil)
+### lumiere.create_render_target(name, config)
 Create a Lumiere render target with the specified buffers.
 
 **PARAMETERS**
 * `name` (string) Unique name of the render target to create.
+* `config` (table) Optional table with render target configuration
+
+The `config` table can contain the following keys:
+
 * `color` (boolean|table) Color buffer settings or true for default values. Nil to not create a color buffer.
 * `depth` (boolean|table) Depth buffer settings or true for default values. Nil to not create a depth buffer.
 * `stencil` (boolean) Stencil buffer settings or true for default values. Nil to not create stencil buffer.
+* `width` (number) Width of render target. The window width will be used if this value isn't specified.
+* `height` (number) Height of render target. The window height will be used if this value isn't specified.
 
 **RETURN**
 * ```render_target``` (table) The created render target. This is a table wrapping the render target and adding additional information about the render target (for use by other Lumiere functions)

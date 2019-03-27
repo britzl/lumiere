@@ -6,7 +6,7 @@ local render_target = nil
 
 function M.init()
 	assert(not render_target, "You cannot call init() twice")
-	render_target = lumiere.create_render_target("graphics2d", true, false, false)
+	render_target = lumiere.create_render_target("graphics2d", { color = true })
 end
 
 function M.final()

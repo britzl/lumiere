@@ -22,7 +22,7 @@ function M.create(ambient_light, intensity_min, intensity_max)
 		assert(not RT)
 		lights_predicate = lumiere.predicate({ hash("light") })
 		apply_lights_predicate = lumiere.predicate({ hash("apply_lights") })
-		render_target = lumiere.create_render_target("apply_lights", true, false, false)
+		render_target = lumiere.create_render_target("apply_lights", { color = true })
 	end
 
 	function instance.final()
