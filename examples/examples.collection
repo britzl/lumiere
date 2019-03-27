@@ -342,6 +342,26 @@ instances {
     z: 1.0
   }
 }
+instances {
+  id: "colorgrade"
+  prototype: "/lumiere/effects/colorgrade/colorgrade.go"
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
 scale_along_z: 0
 embedded_instances {
   id: "examples"
@@ -481,6 +501,7 @@ embedded_instances {
   children: "blur"
   children: "chromatic_aberration"
   children: "chromatical"
+  children: "colorgrade"
   children: "grain"
   children: "lcd"
   children: "lights"

@@ -6,6 +6,7 @@ local grain = require "lumiere.effects.grain.grain"
 local PRG = {}
 
 function PRG.init(self)
+	print("grain")
 	grain.init()
 	graphics2d.init()
 	render_helper.init(self)

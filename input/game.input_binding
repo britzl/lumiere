@@ -22,6 +22,18 @@ key_trigger {
   input: KEY_6
   action: "prg6"
 }
+key_trigger {
+  input: KEY_7
+  action: "prg7"
+}
+key_trigger {
+  input: KEY_8
+  action: "prg8"
+}
+key_trigger {
+  input: KEY_9
+  action: "prg9"
+}
 mouse_trigger {
   input: MOUSE_BUTTON_1
   action: "touch"

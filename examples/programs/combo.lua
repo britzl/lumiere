@@ -9,15 +9,17 @@ local lcd = require "lumiere.effects.lcd.lcd"
 local chromatical = require "lumiere.effects.chromatical.chromatical"
 local chromatic_aberration = require "lumiere.effects.chromatic_aberration.chromatic_aberration"
 local scanlines = require "lumiere.effects.scanlines.scanlines"
+local colorgrade = require "lumiere.effects.colorgrade.colorgrade"
 local posteffects = require "lumiere.effects.posteffects"
 
 local PRG = {}
 
 function PRG.init(self)
+	print("combo")
 	render_helper.init(self)
 	graphics2d.init()
 
-	self.posteffect = posteffects.create(lights, grain, chromatic_aberration, scanlines)
+	self.posteffect = posteffects.create(lights, colorgrade, chromatic_aberration, scanlines)
 	posteffects.init(self.posteffect)
 end
 

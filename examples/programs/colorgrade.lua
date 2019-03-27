@@ -1,20 +1,24 @@
 local lumiere = require "lumiere.lumiere"
 local render_helper = require "orthographic.render.helper"
-local lights = require "lumiere.effects.lights.lights"
 local graphics2d = require "examples.programs.utils.graphics2d"
+
+local colorgrade = require "lumiere.effects.colorgrade.colorgrade"
+local posteffects = require "lumiere.effects.posteffects"
 
 local PRG = {}
 
 function PRG.init(self)
-	print("lights")
+	print("colorgrade")
 	render_helper.init(self)
-	lights.init()
 	graphics2d.init()
+
+	self.posteffect = posteffects.create(colorgrade.create("/examples/assets/custom/colorgrade_lut16.png"))
+	posteffects.init(self.posteffect)
 end
 
 function PRG.final(self)
-	lights.final()
 	graphics2d.final()
+	posteffects.final(self.posteffect)
 end
 
 function PRG.update(self, dt)
@@ -22,8 +26,7 @@ function PRG.update(self, dt)
 
 	lumiere.set_view_projection(render_helper.world_view(self), render_helper.world_projection(self))
 	graphics2d.update()
-	lights.update()
-	lights.apply(graphics2d.render_target())
+	posteffects.apply(self.posteffect, graphics2d.render_target())
 	lumiere.draw_gui(render_helper.screen_view(self), render_helper.screen_projection(self))
 end
 

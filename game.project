@@ -1,6 +1,6 @@
 [project]
 title = Lumiere
-custom_resources = 
+custom_resources = /examples/assets/custom
 dependencies = https://github.com/britzl/defold-orthographic/archive/2.6.0.zip
 
 [bootstrap]

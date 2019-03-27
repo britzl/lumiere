@@ -7,6 +7,7 @@ local PRG = {}
 
 
 function PRG.init(self)
+	print("lcd")
 	render_helper.init(self)
 	lcd.init()
 	graphics2d.init()
