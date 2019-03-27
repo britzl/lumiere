@@ -51,6 +51,7 @@ Lumiere provides a number of standard effects:
 * [Chromatic Aberration](chromatic_aberration/)
 * [LCD](lcd/)
 * [Scanlines](scanlines/)
+* [Colorgrade](colorgrade/)
 
 You can also create your own effects and plug these into the effects system. A Lumiere effect is encapsulated into a Lua module with a single requirement that it provides an `apply()` function that takes a render target as input and an optional render target as output. Effects are usually comprised of a game object with a model component using a unit quad with a material that references the effect shader. The effect can do just about anything but the most typical use-case is that it enables the render target input as a texture, enables the output render target if available and draws using the predicate assigned to the effect material to apply the effect:
 
