@@ -16,7 +16,7 @@ You use the effects system by creating a post-effect chain and apply it as part 
 		self.blur_grain_effect = posteffects.create(blur, grain)
 
 		-- create a render target as a source/input
-		self.source_rt = lumiere.create_render_target("graphics2d", true, false, false)
+		self.source_rt = lumiere.create_render_target("graphics2d", { color = true })
 
 		-- initialize the post effects
 		posteffects.init(self.blur_grain_effect)

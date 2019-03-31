@@ -68,8 +68,13 @@ The lifecycle functions can mix normal `render.*` functions with `lumiere.*` API
 
 
 # Effects
-Lumiere provides a system that makes it very easy to apply multiple post-effects to a game. This could be anything from lights or blur to scanlines and LCD effects. The system is completely optional and is not active by default. [Learn more about the post-effects system here](lumiere/effects/).
+Lumiere provides a system that makes it very easy to apply multiple post-effects to a game. This could be anything from lights or blur to scanlines and LCD effects. The system is completely optional and is not active by default. [Learn more about the post-effects system here](lumiere/effects/). Examples of effects provided:
 
+* Lights
+* Scanlines
+* Blur
+* Chromatic aberration
+* Color grading
 
 # API
 The Lumiere API functions typically wrap the normal `render.*` functions and in some ways simplify them.
