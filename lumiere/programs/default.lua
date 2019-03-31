@@ -77,7 +77,6 @@ function M.update(self)
 	render.disable_state(render.STATE_STENCIL_TEST)
 
 	render.set_depth_mask(false)
-	render.draw_debug2d()
 end
 
 function M.on_message(self, message_id, message, sender)
