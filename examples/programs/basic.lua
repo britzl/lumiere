@@ -4,13 +4,14 @@ local PRG = {}
 
 function PRG.init(self)
 	print("basic")
+	self.distortion_pred = lumiere.predicate({ "distortion" })
 end
 
 function PRG.update(self, dt)
 	lumiere.clear(lumiere.clear_color())
-	lumiere.set_view_projection()
-	lumiere.draw_graphics2d(view, projection)
-	lumiere.set_screen_projection()
+	lumiere.use_world_projection()
+	lumiere.draw_graphics2d(self.distortion_pred)
+	lumiere.use_screen_projection()
 	lumiere.draw_gui()
 end
 

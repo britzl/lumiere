@@ -148,8 +148,28 @@ Set the view projection to use.
 Set the view and projection to identity matrices.
 
 
-### lumiere.set_screen_projection()
-Set the view and projection to screen space (identity view and screen space projection).
+### lumiere.set_screen_projection(view, projection)
+Set the screen view projection to use.
+
+**PARAMETERS**
+* `view` (matrix4) View to use.
+* `projection` (matrix4) Projection to use.
+
+
+### lumiere.use_screen_projection()
+Use the currently set screen view projection.
+
+
+### lumiere.set_world_projection(view, projection)
+Set the world view projection to use.
+
+**PARAMETERS**
+* `view` (matrix4) View to use.
+* `projection` (matrix4) Projection to use.
+
+
+### lumiere.use_world_projection()
+Use the currently set world view projection.
 
 
 ### lumiere.set_constant(key, value)

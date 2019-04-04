@@ -47,7 +47,7 @@ function M.create(lut_filename)
 			lut_target = lumiere.create_render_target("colorgrade_lut", { color = true, width = M.LUT_WIDTH, height = M.LUT_HEIGHT })
 			lut_target.update()
 			lumiere.enable_render_target(lut_target)
-			lumiere.set_screen_projection()
+			lumiere.use_screen_projection()
 			lumiere.draw(lumiere.predicate({"colorgrade_lut"}))
 			lumiere.disable_render_target(lut_target)
 		end

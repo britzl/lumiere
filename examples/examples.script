@@ -1,3 +1,4 @@
+local camera = require "orthographic.camera"
 local lumiere = require "lumiere.lumiere"
 local lights = require "examples.programs.lights"
 local grain = require "examples.programs.grain"
@@ -21,11 +22,15 @@ end
 
 
 function on_input(self, action_id, action)
+	if not action_id then
+		local world = camera.screen_to_world(hash("/camera"), vmath.vector3(action.x, action.y, 0))
+		go.set_position(world, "cursor")
+	end
 	if action.released then
 		if action_id == hash("prg1") then
 			lumiere.use_program("default")
 		elseif action_id == hash("prg2") then
-			lumiere.use_program("lights")
+			lumiere.use_program("basic")
 		elseif action_id == hash("prg3") then
 			lumiere.use_program("grain")
 		elseif action_id == hash("prg4") then
@@ -33,7 +38,7 @@ function on_input(self, action_id, action)
 		elseif action_id == hash("prg5") then
 			lumiere.use_program("combo")
 		elseif action_id == hash("prg6") then
-			lumiere.use_program("basic")
+			lumiere.use_program("lights")
 		elseif action_id == hash("prg7") then
 			lumiere.use_program("colorgrade")
 		end

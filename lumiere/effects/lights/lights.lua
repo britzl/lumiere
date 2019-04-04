@@ -1,4 +1,5 @@
 local lumiere = require "lumiere.lumiere"
+local render_helper = require "orthographic.render.helper"
 
 local M = {}
 
@@ -32,6 +33,7 @@ function M.create(ambient_light, intensity_min, intensity_max)
 
 	function instance.update()
 		intensity_v4.x = instance.intensity_min + math.random() * (instance.intensity_max - instance.intensity_min)
+		lumiere.use_world_projection()
 		lumiere.enable_render_target(render_target)
 		lumiere.set_constant("intensity", intensity_v4)
 		lumiere.clear(instance.ambient_light)

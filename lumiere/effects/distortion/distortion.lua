@@ -25,8 +25,9 @@ function M.create(ambient_light)
 	end
 
 	function instance.update()
+		lumiere.use_world_projection()
 		lumiere.enable_render_target(distortion_render_target)
-		lumiere.clear(lumiere.BLACK)
+		lumiere.clear(lumiere.TRANSPARENT)
 		lumiere.draw(distortion_predicate)
 		lumiere.disable_render_target()
 	end

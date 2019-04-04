@@ -55,9 +55,10 @@ local const_resolution = vmath.vector4(0, 0, width, height)
 
 local view_settings = {
 	viewport = nil,
-	view = vmath.matrix4(),
-	projection = vmath.matrix4_orthographic(0, width, 0, height, -1, 1),
+	screen_view = vmath.matrix4(),
 	screen_projection = vmath.matrix4_orthographic(0, width, 0, height, -1, 1),
+	world_view = vmath.matrix4(),
+	world_projection = vmath.matrix4_orthographic(0, width, 0, height, -1, 1),
 }
 
 M.MATERIAL_MIX = hash("mix")
@@ -111,10 +112,9 @@ end
 
 -- set view projection to specified matrices
 function M.set_view_projection(view, projection)
-	render.set_view(view or view_settings.view or IDENTITY)
-	render.set_projection(projection or view_settings.projection or IDENTITY)
+	render.set_view(view  or IDENTITY)
+	render.set_projection(projection or IDENTITY)
 end
-
 
 -- set view projection to identity matrix
 function M.set_identity_projection()
@@ -122,10 +122,38 @@ function M.set_identity_projection()
 	render.set_projection(IDENTITY)
 end
 
--- set view projection to identity screen space
-function M.set_screen_projection()
+-- set and use screen view projection
+function M.set_screen_projection(view, projection)
+	assert(view, "You must provide a view matrix")
+	assert(projection, "You must provide a projection matrix")
+	view_settings.screen_view = view
+	view_settings.screen_projection = projection
 	render.set_view(IDENTITY)
 	render.set_projection(view_settings.screen_projection)
+end
+
+-- use screen view projection
+-- previously set using set_screen_projection
+function M.use_screen_projection()
+	render.set_view(view_settings.screen_view)
+	render.set_projection(view_settings.screen_projection)
+end
+
+-- set and use world view projection
+function M.set_world_projection(view, projection)
+	assert(view, "You must provide a view matrix")
+	assert(projection, "You must provide a projection matrix")
+	view_settings.world_view = view
+	view_settings.world_projection = projection
+	render.set_view(view)
+	render.set_projection(projection)
+end
+
+-- use world view projection
+-- previously set using set_world_projection
+function M.use_world_projection()
+	render.set_view(view_settings.world_view)
+	render.set_projection(view_settings.world_projection)
 end
 
 -- set a constant that will be passed to
@@ -193,19 +221,16 @@ function M.multiply(render_target1, render_target2)
 end
 
 -- draw gui
-function M.draw_gui(view, projection)
-	if view then render.set_view(view) end
-	if projection then render.set_projection(projection) end
+function M.draw_gui()
 	render.enable_state(render.STATE_STENCIL_TEST)
 	render.draw(predicates.gui)
 	render.draw(predicates.text)
 	render.disable_state(render.STATE_STENCIL_TEST)
 end
 
-function M.draw_graphics2d(view, projection)
-	if view then render.set_view(view) end
-	if projection then render.set_projection(projection) end
-	M.draw(predicates.tile, predicates.particle)
+-- draw graphics 2d 
+function M.draw_graphics2d(...)
+	M.draw(predicates.tile, predicates.particle, ...)
 end
 
 -- draw the specified predicates
@@ -439,7 +464,7 @@ function M.update(self, dt)
 	width = render.get_window_width()
 	height = render.get_window_height()
 	if const_resolution.x ~= width or const_resolution.y ~= height then
-		view_settings.screen_space_projection = vmath.matrix4_orthographic(0, width, 0, height, -1, 1)
+		view_settings.screen_projection = vmath.matrix4_orthographic(0, width, 0, height, -1, 1)
 		const_resolution.x = width
 		const_resolution.y = height
 	end
@@ -495,8 +520,8 @@ function M.on_message(self, message_id, message, sender)
 		programs[id] = nil
 	else
 		if message_id == SET_VIEW_PROJECTION then
-			view_settings.view = message.view
-			view_settings.projection = message.projection
+			view_settings.world_view = message.view
+			view_settings.world_projection = message.projection
 		elseif message_id == CLEAR_COLOR then
 			clear_color = message.color
 		end

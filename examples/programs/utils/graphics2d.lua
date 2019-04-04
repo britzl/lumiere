@@ -15,10 +15,11 @@ function M.final()
 	render_target = nil
 end
 
-function M.update(view, projection)
+function M.update()
+	lumiere.use_world_projection()
 	lumiere.enable_render_target(render_target)
 	lumiere.clear(lumiere.BLACK)
-	lumiere.draw_graphics2d(view, projection)
+	lumiere.draw_graphics2d()
 	lumiere.disable_render_target()
 end
 

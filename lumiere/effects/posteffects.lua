@@ -39,13 +39,20 @@ function M.create(...)
 		end
 	end
 
-	function instance.apply(input, output)
+	function instance.update()
 		local count = #effects
 		for i=1,count do
 			local effect = effects[i]
 			if effect.update then
 				effect.update()
 			end
+		end
+	end
+	
+	function instance.apply(input, output)
+		local count = #effects
+		for i=1,count do
+			local effect = effects[i]
 			if count == 1 then
 				effect.apply(input, output)
 			elseif i == 1 then
@@ -63,25 +70,31 @@ function M.create(...)
 end
 
 --- initialize a sequence of post effects
-function M.init(posteffect)
-	assert(posteffect, "You must provide a post effect")
-	posteffect.init()
+function M.init(posteffects)
+	assert(posteffects, "You must provide a post effect sequence")
+	posteffects.init()
 end
 
 --- finalize a sequence of post effects
 -- the post effects cannot be used after a call to final()
-function M.final(posteffect)
-	assert(posteffect, "You must provide a post effect")
-	posteffect.final()
+function M.final(posteffects)
+	assert(posteffects, "You must provide a post effect sequence")
+	posteffects.final()
+end
+
+--- update a sequence of post effects
+function M.update(posteffects)
+	assert(posteffects, "You must provide a post effect sequence")
+	posteffects.update()
 end
 
 --- apply a sequence of post effects to a render target,
 -- optionally rendering it to a destination target, otherwise to
 -- the screen
-function M.apply(posteffect, input, output)
-	assert(posteffect, "You must provide a post effect")
+function M.apply(posteffects, input, output)
+	assert(posteffects, "You must provide a post effect sequence")
 	assert(input, "You must provide a render target to apply effects to")
-	posteffect.apply(input, output)
+	posteffects.apply(input, output)
 end
 
 
