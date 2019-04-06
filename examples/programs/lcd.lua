@@ -1,6 +1,6 @@
 local lumiere = require "lumiere.lumiere"
 local render_helper = require "orthographic.render.helper"
-local graphics2d = require "examples.programs.utils.graphics2d"
+local graphics2d = require "lumiere.targets.graphics2d"
 local lcd = require "lumiere.effects.lcd.lcd"
 
 local PRG = {}
