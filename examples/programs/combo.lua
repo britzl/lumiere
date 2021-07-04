@@ -11,7 +11,6 @@ local chromatical = require "lumiere.effects.chromatical.chromatical"
 local chromatic_aberration = require "lumiere.effects.chromatic_aberration.chromatic_aberration"
 local scanlines = require "lumiere.effects.scanlines.scanlines"
 local colorgrade = require "lumiere.effects.colorgrade.colorgrade"
-local outline = require "lumiere.effects.outline.outline"
 local distortion = require "lumiere.effects.distortion.distortion"
 
 local PRG = {}
