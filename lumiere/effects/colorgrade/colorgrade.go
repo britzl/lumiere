@@ -16,7 +16,7 @@ components {
 embedded_components {
   id: "model"
   type: "model"
-  data: "mesh: \"/lumiere/assets/quad.dae\"\n"
+  data: "mesh: \"/builtins/assets/meshes/quad_2x2.dae\"\n"
   "material: \"/lumiere/effects/colorgrade/colorgrade.material\"\n"
   "textures: \"\"\n"
   "textures: \"/examples/assets/custom/colorgrade_lut16.png\"\n"

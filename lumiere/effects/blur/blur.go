@@ -1,7 +1,7 @@
 embedded_components {
   id: "model"
   type: "model"
-  data: "mesh: \"/lumiere/assets/quad.dae\"\n"
+  data: "mesh: \"/builtins/assets/meshes/quad_2x2.dae\"\n"
   "material: \"/lumiere/effects/blur/blur.material\"\n"
   "skeleton: \"\"\n"
   "animations: \"\"\n"
