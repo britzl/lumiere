@@ -100,10 +100,14 @@ function M.disable_render_target()
 end
 
 
-function M.set_viewport(x, y, w, h)
-	if not x then
+function M.set_viewport(x_or_v4, y, w, h)
+	if not x_or_v4 then
 		view_settings.viewport = nil
 		render.set_viewport(0, 0, width, height)
+	elseif type(x_or_v4) == "userdata" then
+		local v4 = x_or_v4
+		view_settings.viewport = v4
+		render.set_viewport(v4.x, v4.y, v4.z, v4.w)
 	else
 		view_settings.viewport = vmath.vector4(x, y, w, h)
 		render.set_viewport(x, y, w, h)
@@ -124,11 +128,11 @@ end
 
 -- set and use screen view projection
 function M.set_screen_projection(view, projection)
-	assert(view, "You must provide a view matrix")
-	assert(projection, "You must provide a projection matrix")
+	view = view or IDENTITY
+	projection = projection or vmath.matrix4_orthographic(0, render.get_window_width(), 0, render.get_window_height(), -1, 1)
 	view_settings.screen_view = view
 	view_settings.screen_projection = projection
-	render.set_view(IDENTITY)
+	render.set_view(view_settings.screen_view)
 	render.set_projection(view_settings.screen_projection)
 end
 

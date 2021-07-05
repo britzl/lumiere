@@ -1,5 +1,4 @@
 local lumiere = require "lumiere.lumiere"
-local render_helper = require "orthographic.render.helper"
 
 local M = {}
 
