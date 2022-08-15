@@ -2,81 +2,55 @@ local lumiere = require "lumiere.lumiere"
 
 local M = {}
 
-M.LUT_WIDTH = 256
-M.LUT_HEIGHT = 16
-
-local ready = false
-
-function M.ready()
-	ready = true
-end
-
-local script = nil
-
-function M.script()
-	script = msg.url()
-end
-
-function M.create(lut_filename)
-	if lut_filename then
-		timer.delay(0, false, function()
-			msg.post(script, "update_lut", { file = lut_filename })
-		end)
-	end
-
-	local instance = {}
-
-	local predicate = nil
-
-	local lut_target = nil
-	
-
-	function instance.init()
-		predicate = lumiere.predicate({ hash("colorgrade") })
-	end
-
-	function instance.final()
-		lumiere.delete_render_target(lut_target)
-	end
-
-	function instance.apply(input, output)
-		if not ready then
-			return
-		end
-		if not lut_target then
-			lut_target = lumiere.create_render_target("colorgrade_lut", { color = true, width = M.LUT_WIDTH, height = M.LUT_HEIGHT })
-			lut_target.update()
-			lumiere.enable_render_target(lut_target)
-			lumiere.use_screen_projection()
-			lumiere.draw(lumiere.predicate({"colorgrade_lut"}))
-			lumiere.disable_render_target(lut_target)
-		end
-		if output then lumiere.enable_render_target(output) end
-		lumiere.set_identity_projection()
-		lumiere.clear(lumiere.BLACK)
-		lumiere.enable_texture(0, input)
-		lumiere.enable_texture(1, lut_target)
-		lumiere.draw(predicate)
-		lumiere.disable_texture(0)
-		lumiere.disable_texture(1)
-		if output then lumiere.disable_render_target() end
-	end
-
-	return instance
-end
-
-local singleton = M.create()
+local IDENTITY = vmath.matrix4()
+local APPLY_PREDICATE = nil
+local LUT_PREDICATE = nil
+local LUT_RT = nil
+local LUT_WIDTH = 256
+local LUT_HEIGHT = 16
 
 function M.init()
-	singleton.init()
+	APPLY_PREDICATE = render.predicate({ hash("colorgrade") })
+	LUT_PREDICATE = render.predicate({ hash("colorgrade_lut") })
 end
 
 function M.final()
-	singleton.final()
+	if LUT_RT then
+		render.delete_render_target(LUT_RT)
+		LUT_RT = nil
+	end
 end
 
-function M.apply(input, output)
-	singleton.apply(input, output)
+function M.update()
+	if not LUT_RT then
+		local color_params = { format = render.FORMAT_RGBA,
+			width = LUT_WIDTH,
+			height = LUT_HEIGHT,
+			min_filter = render.FILTER_LINEAR,
+			mag_filter = render.FILTER_LINEAR,
+			u_wrap = render.WRAP_CLAMP_TO_EDGE,
+			v_wrap = render.WRAP_CLAMP_TO_EDGE }
+
+		LUT_RT = render.render_target({[render.BUFFER_COLOR_BIT] = color_params })	
+
+		render.set_render_target(LUT_RT)
+		render.set_view(IDENTITY)
+		render.set_projection(vmath.matrix4_orthographic(0, render.get_window_width(), 0, render.get_window_height(), -1, 1))
+		render.clear({[render.BUFFER_COLOR_BIT] = lumiere.clear_color()})
+		render.draw(LUT_PREDICATE)
+		render.set_render_target(render.RENDER_TARGET_DEFAULT)
+	end
+end
+
+function M.apply(input)
+	render.set_view(IDENTITY)
+	render.set_projection(IDENTITY)
+	render.clear({[render.BUFFER_COLOR_BIT] = lumiere.clear_color()})
+	render.enable_texture(0, input, render.BUFFER_COLOR_BIT)
+	render.enable_texture(1, LUT_RT, render.BUFFER_COLOR_BIT)
+	render.draw(APPLY_PREDICATE)
+	render.disable_texture(0)
+	render.disable_texture(1)
 end
 
 return M

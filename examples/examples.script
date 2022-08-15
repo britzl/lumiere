@@ -1,38 +1,34 @@
-local camera = require "orthographic.camera"
-local lumiere = require "lumiere.lumiere"
-local lights = require "examples.programs.lights"
-local grain = require "examples.programs.grain"
-local lcd = require "examples.programs.lcd"
-local combo = require "examples.programs.combo"
-local basic = require "examples.programs.basic"
-local colorgrade = require "examples.programs.colorgrade"
+local grain = require("lumiere.effects.grain.grain")
+local lcd = require("lumiere.effects.lcd.lcd")
+local scanlines = require("lumiere.effects.scanlines.scanlines")
+local chromatical = require("lumiere.effects.chromatical.chromatical")
+local chromatic_aberration = require("lumiere.effects.chromatic_aberration.chromatic_aberration")
+local blur = require("lumiere.effects.blur.blur")
+local distortion = require("lumiere.effects.distortion.distortion")
+local lights = require("lumiere.effects.lights.lights")
+local colorgrade = require("lumiere.effects.colorgrade.colorgrade")
+
+local lumiere = require("lumiere.lumiere")
+local easel = require("easel.easel")
+local example_render = require("examples.render")
 
 function init(self)
-	lumiere.add_program("lights", lights)
-	lumiere.add_program("grain", grain)
-	lumiere.add_program("combo", combo)
-	lumiere.add_program("lcd", lcd)
-	lumiere.add_program("basic", basic)
-	lumiere.add_program("colorgrade", colorgrade)
-	
-	lumiere.use_program("lights")
-
 	msg.post(".", "acquire_input_focus")
+
+	easel.add_program("example_render", example_render)
+	easel.use_program("example_render")
+
+	lumiere.use_effects({ colorgrade })
 end
 
-
 function on_input(self, action_id, action)
-	if not action_id then
-		local world = camera.screen_to_world(hash("/camera"), vmath.vector3(action.x, action.y, 0))
-		go.set_position(world, "cursor")
-	end
 	if action.released then
 		if action_id == hash("prg1") then
-			lumiere.use_program("default")
+			lumiere.use_effects({})
 		elseif action_id == hash("prg2") then
-			lumiere.use_program("basic")
+			lumiere.use_effects({ grain })
 		elseif action_id == hash("prg3") then
-			lumiere.use_program("grain")
+			lumiere.use_effects({ grain, lcd, scanlines })
 		elseif action_id == hash("prg4") then
 			lumiere.use_program("lcd")
 		elseif action_id == hash("prg5") then
@@ -43,4 +39,10 @@ function on_input(self, action_id, action)
 			lumiere.use_program("colorgrade")
 		end
 	end
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
 end

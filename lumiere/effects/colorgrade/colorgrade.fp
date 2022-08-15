@@ -29,7 +29,6 @@ void main()
 	vec4 graded_color_l = texture2D(lut, lut_pos_l); 
 	vec4 graded_color_h = texture2D(lut, lut_pos_h);
 
-
 	vec4 graded_color = mix(graded_color_l, graded_color_h, fract(cell));
 
 	gl_FragColor = graded_color;

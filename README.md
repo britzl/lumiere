@@ -1,5 +1,5 @@
 # Lumiere
-The goal of Lumiere is to wrap the Defold render API and make the render script more flexible and easier to modify at runtime.
+Lumiere is a collection of post processing effects for use in Defold.
 
 ## Installation
 You can use Lumiere in your own project by adding this project as a [Defold library dependency](http://www.defold.com/manuals/libraries/). Open your game.project file and in the dependencies field under project add:
@@ -9,271 +9,79 @@ https://github.com/britzl/lumiere/archive/master.zip
 Or point to the ZIP file of a [specific release](https://github.com/britzl/lumiere/releases).
 
 # Usage
-Using Lumiere requires that `lumiere/lumiere.render` is set as the renderer in `game.project` in the Bootstrap section. Once this is done Lumiere can be used to swap out the default render script functionality with your own custom render pipeline, either as a one time thing at startup or any number of times while the game is running. The interchangeable part of the render script is called a program.
+Lumiere has to be integrated with your render script to be able to apply effects. 
 
-# Programs
-Programs are essentially the contents of a render script that can easily be interchanged at run-time. Programs can be added and removed and a single program is active at any given time. The most basic program similar to the default render script looks like this:
+## Render script integration
+Integrating Lumiere is done in two steps:
 
-	local lumiere = require "lumiere.lumiere"
+1. Add `/lumiere/lumiere.go` to a loaded collection, either the bootstrap collection or a loaded proxy collection. This game object contains a full screen quad to which the final composition of post processing effects is drawn.
+2. Integrate Lumiere in the render script:
 
-	local PRG = {}
 
-	function PRG.update(self, dt)
-		lumiere.clear(lumiere.clear_color())
-		lumiere.set_view_projection()
-		lumiere.draw_graphics2d(view, projection)
-		lumiere.set_identity_projection()
-		lumiere.draw_gui()
-	end
+```
+-- require lumiere for use in the render script
+local lumiere = require("lumiere.lumiere")
 
-	return PRG
 
-A program is added to and used by Lumiere through the `lumiere.add_program()` and `lumiere.use_program()` functions:
+function init(self)
+	-- initialize lumiere
+	lumiere.init()
 
-	local lumiere = require "lumiere.lumiere"
-	local my_program = require "foobar.my_program"
+	-- the rest of your init code
+	...
+end
 
-	function init(self)
-		lumiere.add_program("my_program", my_program)
-		lumiere.use_program("my_program")
-	end
+function update(self)
+	-- update lumiere each frame
+	lumiere.update()
 
-If Lumiere is used without a custom program it will behave exactly like the default render script. The default program can be found in [`lumiere/programs/default.lua`](lumiere/programs/default.lua).
+	-- your render script update code
+	...
 
-You create your own program by creating a Lua module with public functions that mirrors the Defold lifecycle functions (remove any function that you don't need):
+	-- wrap any render.draw() calls that should be affected by lumiere effects
+	lumiere.draw(function()
+		local frustum = self.projection * self.view
+		render.draw(self.tile_pred, { frustum = frustum })
+		render.draw(self.particle_pred, { frustum = frustum })
+	end)
 
-	local PRG = {}
+	...
+end
 
-	function PRG.init(self)
-		-- add any setup code here
-	end
+function M.on_message(self, message_id, message, sender)
+	-- pass messages to lumiere (to detect change in clear color etc)
+	lumiere.on_message(message_id, message, sender)
 
-	function PRG.final(self)
-		-- add any cleanup code here
-	end
+	-- the rest of your on_message code
+	...
+end
+```
 
-	function PRG.update(self, dt)
-		-- add render code here to draw every frame
-	end
 
-	function PRG.on_message(self, message_id, message, sender)
-		-- messages sent to the render script will be forwarded here
-	end
+## Using effects
+Lumiere provides a system to apply multiple post-effects to a game. Examples of effects provided:
 
-	function PRG.on_reload(self)
-		-- callback when the render script is reloaded
-	end
+* [Blur](lumiere/effects/blur/)
+* [Grain](lumiere/effects/grain/)
+* [Lights](lumiere/effects/lights/)
+* [Chromatic Aberration](lumiere/effects/chromatic_aberration/)
+* [LCD](lumiere/effects/lcd/)
+* [Scanlines](lumiere/effects/scanlines/)
+* [Colorgrade](lumiere/effects/colorgrade/)
 
-The lifecycle functions can mix normal `render.*` functions with `lumiere.*` API functions (see below for a full API specification).
+Each effect consists of some shader code, a Lua module and a game object. To use an effect the game object for the effect has to be added to a loaded collection, either the bootstrap collection or a loaded proxy collection. The Lua module for the effect also has to be added to Lumiere:
 
+```
 
-# Effects
-Lumiere provides a system that makes it very easy to apply multiple post-effects to a game. This could be anything from lights or blur to scanlines and LCD effects. The system is completely optional and is not active by default. [Learn more about the post-effects system here](lumiere/effects/). Examples of effects provided:
+local lumiere = require("lumiere.lumiere")
+local blur = require("lumiere.effects.blur.blur")
+local grain = require("lumiere.effects.grain.grain")
 
-* Lights
-* Scanlines
-* Blur
-* Chromatic aberration
-* Color grading
 
-# API
-The Lumiere API functions typically wrap the normal `render.*` functions and in some ways simplify them.
+function init(self)
+	-- use the blur and grain effect (in that order)
+	lumiere.use_effects({ blur, grain })
+end
+```
 
-### lumiere.create_render_target(name, config)
-Create a Lumiere render target with the specified buffers.
 
-**PARAMETERS**
-* `name` (string) Unique name of the render target to create.
-* `config` (table) Optional table with render target configuration
-
-The `config` table can contain the following keys:
-
-* `color` (boolean|table) Color buffer settings or true for default values. Nil to not create a color buffer.
-* `depth` (boolean|table) Depth buffer settings or true for default values. Nil to not create a depth buffer.
-* `stencil` (boolean) Stencil buffer settings or true for default values. Nil to not create stencil buffer.
-* `width` (number) Width of render target. The window width will be used if this value isn't specified.
-* `height` (number) Height of render target. The window height will be used if this value isn't specified.
-
-**RETURN**
-* ```render_target``` (table) The created render target. This is a table wrapping the render target and adding additional information about the render target (for use by other Lumiere functions)
-
-
-### lumiere.delete_render_target(render_target)
-Delete a previously created render target
-
-**PARAMETERS**
-* `render_target` (table) The render target to delete (created via `lumiere.create_render_target()`).
-
-
-### lumiere.predicate(tags)
-Create a predicate using the specified tags. Lumiere will cache created predicates and return an already created predicate if it matches the specified tags.
-
-**PARAMETERS**
-* `tags` (table) Table with tags (string[hash)
-
-**RETURN**
-* ```predicate``` (predicate) The created predicate
-
-
-### lumiere.enable_render_target(render_target)
-Enable a Lumiere render target. The render target will be used for any subsequent draw or clear operations until explicitly disabled.
-
-**PARAMETERS**
-* `render_target` (table) Lumiere render target (from `lumiere.create_render_target`)
-
-
-### lumiere.disable_render_target()
-Disable any currently enabled render target.
-
-
-### lumiere.set_viewport(x, y, w, h)
-Set or clear the viewport. If the viewport is cleared it will automatically use the entire window size and change whenever the window size changes. If the viewport is set using this method it will stay fixed to the size specified regardless if the window size changes.
-
-**PARAMETERS**
-* `x` (number) Left corner (nil to clear the viewport)
-* `y` (number) Bottom corner
-* `w` (number) Viewport width
-* `h` (number) Viewport height
-
-
-### lumiere.set_view_projection(view, projection)
-Set the view projection to use.
-
-**PARAMETERS**
-* `view` (matrix4) View to use. Fallback to use view from `set_view_projection` message or identity if not specified.
-* `projection` (matrix4) Projection to use. Fallback to use projection from `set_view_projection` message or identity if not specified.
-
-
-### lumiere.set_identity_projection()
-Set the view and projection to identity matrices.
-
-
-### lumiere.set_screen_projection(view, projection)
-Set the screen view projection to use.
-
-**PARAMETERS**
-* `view` (matrix4) View to use.
-* `projection` (matrix4) Projection to use.
-
-
-### lumiere.use_screen_projection()
-Use the currently set screen view projection.
-
-
-### lumiere.set_world_projection(view, projection)
-Set the world view projection to use.
-
-**PARAMETERS**
-* `view` (matrix4) View to use.
-* `projection` (matrix4) Projection to use.
-
-
-### lumiere.use_world_projection()
-Use the currently set world view projection.
-
-
-### lumiere.set_constant(key, value)
-Set a shader constant to be provided in a constant buffer when drawing.
-
-**PARAMETERS**
-* `key` (string) Shader constant key
-* `value` (vector4) Shader constant value
-
-
-### lumiere.reset_constant(key)
-Remove a previously set shader constant.
-
-**PARAMETERS**
-* `key` (string) Shader constant key to remove
-
-
-### lumiere.reset_constants()
-Remove all previously set shader constants.
-
-
-### lumiere.time()
-Get current time (for use as a shader constant)
-
-**RETURN**
-* `time` (vector4) Time (x = time in seconds, y = delta time)
-
-
-### lumiere.resolution()
-Get the current resolution (for use as a shader constant)
-
-**RETURN**
-* `resolution` (vector4) Resolution (x = width, y = height, z = original width, w = original height)
-
-
-### lumiere.clear(color, depth, stencil)
-Clear color, depth and stencil buffers. This will take into account the settings of the current render target (if any).
-
-**PARAMETERS**
-* `color` (vector4) Clear color or nil to not clear the color buffer.
-* `depth` (number) Depth value or nil to not clear the depth buffer.
-* `stencil` (number) Stencil value or nil to not clear the stencil buffer.
-
-
-### lumiere.enable_texture(unit, render_target, buffer_type)
-Sets the specified render target's specified buffer to be used as texture with the specified unit. A material shader can then use the texture to sample from.
-
-**PARAMETERS**
-* `unit` (number) Texture unit to enable texture for
-* `render_target` (table) Lumiere render target
-* `buffer_type` (constant) Buffer type from which to enable the texture (render.BUFFER_*)
-
-
-### lumiere.disable_texture(unit)
-Disables a texture unit for a render target that has previously been enabled.
-
-**PARAMETERS**
-* `unit` (number) Texture unit to disable texture for
-
-
-### lumiere.draw(...)
-Draw one or more predicates to the current render target using any previously set constants.
-
-**PARAMETERS**
-* `...` (vararg) List of predicates
-
-
-### lumiere.add_program(id, program)
-Add a program to Lumiere. See section on Lumiere programs.
-
-**PARAMETERS**
-* `id` (string|hash) Unique id of the program to add
-* `program` (table) The Lumiere program to add
-
-
-### lumiere.use_program(id)
-Use a previously added program.
-
-**PARAMETERS**
-* `id` (string|hash) Id of the program to use
-
-
-### lumiere.remove_program(id)
-Remove a previously added program.
-
-**PARAMETERS**
-* `id` (string|hash) Id of the program to remove
-
-
-### lumiere.init(self)
-Initialize Lumiere. Automatically called from `lumiere.render_script`
-
-
-### lumiere.final(self)
-Finalize Lumiere. Automatically called from `lumiere.render_script`. This will also call `final()` on an active program.
-
-
-### lumiere.update(self, dt)
-Update Lumiere. Automatically called from `lumiere.render_script`. This will also call `update()` on an active program.
-
-
-### lumiere.on_message(self, message_id, message, sender)
-Message handler. Automatically called from `lumiere.render_script`. This will also call `on_message()` on an active program.
-
-
-### lumiere.on_reload(self)
-Hot-reload handler. Automatically called from `lumiere.render_script`. This will also call `on_reload()` on an active program.

@@ -1,7 +1,8 @@
 name: "lumiere_quad"
-tags: "lumiere_copy"
-vertex_program: "/lumiere/materials/quad.vp"
-fragment_program: "/lumiere/materials/copy.fp"
+tags: "lumiere"
+vertex_program: "/lumiere/materials/lumiere.vp"
+fragment_program: "/lumiere/materials/lumiere.fp"
+vertex_space: VERTEX_SPACE_WORLD
 vertex_constants {
   name: "mtx_view"
   type: CONSTANT_TYPE_VIEW
@@ -41,11 +42,4 @@ fragment_constants {
     z: 1.0
     w: 1.0
   }
-}
-samplers {
-  name: "tex0"
-  wrap_u: WRAP_MODE_CLAMP_TO_EDGE
-  wrap_v: WRAP_MODE_CLAMP_TO_EDGE
-  filter_min: FILTER_MODE_MIN_LINEAR
-  filter_mag: FILTER_MODE_MAG_LINEAR
 }

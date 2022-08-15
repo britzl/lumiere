@@ -2,51 +2,31 @@ local lumiere = require "lumiere.lumiere"
 
 local M = {}
 
-local DISTANCE = 2
+local IDENTITY = vmath.matrix4()
+local PREDICATE = nil
+local DISTANCE = 4
 
-function M.create(distance)
-	local instance = {}
-	instance.distance = distance or DISTANCE
-
-	local distance_vector = vmath.vector4(instance.distance, 0, 0, 0)
-	local predicate = nil
-
-	function instance.init()
-		predicate = lumiere.predicate({ hash("blur") })
-	end
-
-	function instance.final()
-	end
-
-	function instance.apply(input, output)
-		distance_vector.x = instance.distance
-		if output then lumiere.enable_render_target(output) end
-		lumiere.set_identity_projection()
-		lumiere.clear(lumiere.BLACK)
-		lumiere.set_constant("resolution", lumiere.resolution())
-		lumiere.set_constant("distance", distance_vector)
-		lumiere.enable_texture(0, input)
-		lumiere.draw(predicate)
-		lumiere.disable_texture(0)
-		lumiere.reset_constants()
-		if output then lumiere.disable_render_target() end
-	end
-
-	return instance
-end
-
-local singleton = M.create(DISTANCE)
+local distance_vector = vmath.vector4(DISTANCE, 0, 0, 0)
 
 function M.init()
-	singleton.init()
+	PREDICATE = render.predicate({ hash("blur") })
 end
 
 function M.final()
-	singleton.final()
 end
 
-function M.apply(input, output)
-	singleton.apply(input, output)
+function M.apply(input)
+	local constants = render.constant_buffer()
+	constants.resolution = lumiere.resolution()
+	constants.distance = distance_vector
+	
+	render.set_view(IDENTITY)
+	render.set_projection(IDENTITY)
+	render.clear({[render.BUFFER_COLOR_BIT] = lumiere.clear_color(), [render.BUFFER_DEPTH_BIT] = 1})
+	render.enable_texture(0, input, render.BUFFER_COLOR_BIT)
+	render.draw(PREDICATE, { constants = constants })
+	render.disable_texture(0)
 end
+
 
 return M

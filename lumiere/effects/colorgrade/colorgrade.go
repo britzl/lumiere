@@ -19,7 +19,7 @@ embedded_components {
   data: "mesh: \"/builtins/assets/meshes/quad_2x2.dae\"\n"
   "material: \"/lumiere/effects/colorgrade/colorgrade.material\"\n"
   "textures: \"\"\n"
-  "textures: \"/examples/assets/custom/colorgrade_lut16.png\"\n"
+  "textures: \"/lumiere/effects/colorgrade/lut16.png\"\n"
   "skeleton: \"\"\n"
   "animations: \"\"\n"
   "default_animation: \"\"\n"

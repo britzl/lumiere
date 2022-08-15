@@ -1,73 +1,19 @@
+go.property("lut", resource.atlas("/lumiere/effects/colorgrade/colorgrade_lut.atlas"))
+
 local colorgrade = require "lumiere.effects.colorgrade.colorgrade"
 
 function init(self)
-	colorgrade.script()
+	print("init lut", self.lut)
+	self.current_lut = self.lut
+	go.set("#lut", "image", self.lut)
+	--sprite.play_flipbook("#lut", "lut16")
 end
 
-function on_message(self, message_id, message, sender)
-	if message_id == hash("update_lut") then
-		assert(message.file, "You must provide a filename")
-		local png = sys.load_resource(message.file)
-		assert(png, ("Unable to load lut from %s"):format(message.file))
-		
-		local img = image.load(png)
-		assert(img, ("Unable to parse lut from %s"):format(message.file))
-		assert(img.width == colorgrade.LUT_WIDTH, "Image is not of the correct width")
-		assert(img.height == colorgrade.LUT_HEIGHT, "Image is not of the correct height")
-		local rgba = img.type == "rgba"
-		
-		local channels = rgba and 4 or 3
-		
-		local buffer_size = colorgrade.LUT_WIDTH * colorgrade.LUT_HEIGHT
-		local buffer_channels = {
-			{ name = hash(img.type), type = buffer.VALUE_TYPE_UINT8, count = channels }
-		}
-		local lut_buffer = buffer.create(buffer_size, buffer_channels)
-
-		-- copy pixels from loaded image to buffer
-		-- note that image is upside down!
-		local stream = buffer.get_stream(lut_buffer, hash(img.type))
-		for y=0,img.height-1 do
-			for x=0,img.width-1 do
-				local image_index = (y * img.width * channels) + (x * channels) + 1
-				local stream_index = ((img.height - 1 - y) * img.width * channels) + (x * channels) + 1
-				if rgba then
-					local r,g,b,a = img.buffer:byte(image_index,image_index + 3)
-					stream[stream_index + 0] = r
-					stream[stream_index + 1] = g
-					stream[stream_index + 2] = b
-					stream[stream_index + 3] = a
-				else
-					local r,g,b = img.buffer:byte(image_index,image_index + 2)
-					stream[stream_index + 0] = r
-					stream[stream_index + 1] = g
-					stream[stream_index + 2] = b
-				end
-			end
-		end
-		
-		local lut_header = {
-			width = colorgrade.LUT_WIDTH,
-			height = colorgrade.LUT_HEIGHT,
-			type = resource.TEXTURE_TYPE_2D,
-			format = rgba and resource.TEXTURE_FORMAT_RGBA or resource.TEXTURE_FORMAT_RGB,
-		}
-
-		local lut_path = go.get("#lut", "texture0")
-
-		-- update texture on lut sprite with loaded image
-		resource.set_texture(lut_path, lut_header, lut_buffer)
-
-		colorgrade.ready()
+function update(self, dt)
+	if self.current_lut ~= self.lut then
+		print("change lut", self.lut)
+		self.current_lut = self.lut
+		go.set("#lut", "image", self.lut)
+		--sprite.play_flipbook("#lut", "lut16")
 	end
-end
-
-function on_input(self, action_id, action)
-	-- Add input-handling code here
-	-- Remove this function if not needed
-end
-
-function on_reload(self)
-	-- Add reload-handling code here
-	-- Remove this function if not needed
 end

@@ -1,11 +1,11 @@
 [project]
 title = Lumiere
-custom_resources = /examples/assets/custom
 dependencies#0 = https://github.com/britzl/defold-orthographic/archive/refs/tags/3.1.1.zip
+dependencies#1 = https://github.com/britzl/easel/archive/master.zip
 
 [bootstrap]
 main_collection = /examples/examples.collectionc
-render = /lumiere/render/lumiere.renderc
+render = /easel/easel.renderc
 
 [input]
 game_binding = /input/game.input_bindingc

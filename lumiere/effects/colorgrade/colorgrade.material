@@ -2,6 +2,7 @@ name: "colorgrade"
 tags: "colorgrade"
 vertex_program: "/lumiere/effects/colorgrade/colorgrade.vp"
 fragment_program: "/lumiere/effects/colorgrade/colorgrade.fp"
+vertex_space: VERTEX_SPACE_WORLD
 vertex_constants {
   name: "view_proj"
   type: CONSTANT_TYPE_VIEWPROJ

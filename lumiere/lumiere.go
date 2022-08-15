@@ -2,7 +2,7 @@ embedded_components {
   id: "model"
   type: "model"
   data: "mesh: \"/builtins/assets/meshes/quad_2x2.dae\"\n"
-  "material: \"/lumiere/materials/multiply.material\"\n"
+  "material: \"/lumiere/materials/lumiere.material\"\n"
   "skeleton: \"\"\n"
   "animations: \"\"\n"
   "default_animation: \"\"\n"

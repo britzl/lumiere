@@ -1,6 +1,6 @@
 name: "apply_distortion"
 tags: "apply_distortion"
-vertex_program: "/lumiere/materials/quad.vp"
+vertex_program: "/lumiere/materials/lumiere.vp"
 fragment_program: "/lumiere/effects/distortion/apply_distortion.fp"
 vertex_space: VERTEX_SPACE_WORLD
 vertex_constants {

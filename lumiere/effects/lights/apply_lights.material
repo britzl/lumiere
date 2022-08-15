@@ -1,7 +1,8 @@
 name: "apply_lights"
 tags: "apply_lights"
-vertex_program: "/lumiere/materials/quad.vp"
-fragment_program: "/lumiere/materials/multiply.fp"
+vertex_program: "/lumiere/materials/lumiere.vp"
+fragment_program: "/lumiere/effects/lights/apply_lights.fp"
+vertex_space: VERTEX_SPACE_WORLD
 vertex_constants {
   name: "mtx_view"
   type: CONSTANT_TYPE_VIEW
@@ -52,15 +53,25 @@ fragment_constants {
     w: 1.0
   }
 }
+fragment_constants {
+  name: "ambient_light"
+  type: CONSTANT_TYPE_USER
+  value {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 0.0
+  }
+}
 samplers {
-  name: "tex0"
+  name: "input_tex"
   wrap_u: WRAP_MODE_CLAMP_TO_EDGE
   wrap_v: WRAP_MODE_CLAMP_TO_EDGE
   filter_min: FILTER_MODE_MIN_LINEAR
   filter_mag: FILTER_MODE_MAG_LINEAR
 }
 samplers {
-  name: "tex1"
+  name: "lights_tex"
   wrap_u: WRAP_MODE_CLAMP_TO_EDGE
   wrap_v: WRAP_MODE_CLAMP_TO_EDGE
   filter_min: FILTER_MODE_MIN_LINEAR
