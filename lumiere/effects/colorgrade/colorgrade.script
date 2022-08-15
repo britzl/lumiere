@@ -3,17 +3,13 @@ go.property("lut", resource.atlas("/lumiere/effects/colorgrade/colorgrade_lut.at
 local colorgrade = require "lumiere.effects.colorgrade.colorgrade"
 
 function init(self)
-	print("init lut", self.lut)
 	self.current_lut = self.lut
 	go.set("#lut", "image", self.lut)
-	--sprite.play_flipbook("#lut", "lut16")
 end
 
 function update(self, dt)
 	if self.current_lut ~= self.lut then
-		print("change lut", self.lut)
 		self.current_lut = self.lut
 		go.set("#lut", "image", self.lut)
-		--sprite.play_flipbook("#lut", "lut16")
 	end
 end

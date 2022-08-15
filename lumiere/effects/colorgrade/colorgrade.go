@@ -18,7 +18,7 @@ embedded_components {
   type: "model"
   data: "mesh: \"/builtins/assets/meshes/quad_2x2.dae\"\n"
   "material: \"/lumiere/effects/colorgrade/colorgrade.material\"\n"
-  "textures: \"\"\n"
+  "textures: \"/lumiere/transparent.png\"\n"
   "textures: \"/lumiere/effects/colorgrade/lut16.png\"\n"
   "skeleton: \"\"\n"
   "animations: \"\"\n"

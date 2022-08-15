@@ -3,9 +3,7 @@ local camera = require "orthographic.camera"
 
 local CAMERA_ID = hash("/camera")
 
-local M = {}
-
-function M.init(self)
+function init(self)
 	lumiere.init()
 
 	self.tile_pred = render.predicate({"tile"})
@@ -17,11 +15,11 @@ function M.init(self)
 	self.view = vmath.matrix4()
 end
 
-function M.final(self)
+function final(self)
 	lumiere.final()
 end
 
-function M.update(self, dt)
+function update(self, dt)
 	lumiere.update(dt)
 
 	local window_width = render.get_window_width()
@@ -62,7 +60,7 @@ function M.update(self, dt)
 		render.draw(self.particle_pred, { frustum = frustum })
 	end)
 	render.draw_debug3d()
-	
+
 	-- render GUI
 	--
 	local view_gui = vmath.matrix4()
@@ -78,9 +76,6 @@ function M.update(self, dt)
 	render.disable_state(render.STATE_STENCIL_TEST)
 end
 
-function M.on_message(self, message_id, message, sender)
+function on_message(self, message_id, message, sender)
 	lumiere.on_message(message_id, message, sender)
 end
-
-
-return M

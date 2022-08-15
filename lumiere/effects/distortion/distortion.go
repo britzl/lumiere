@@ -3,6 +3,8 @@ embedded_components {
   type: "model"
   data: "mesh: \"/builtins/assets/meshes/quad_2x2.dae\"\n"
   "material: \"/lumiere/effects/distortion/apply_distortion.material\"\n"
+  "textures: \"/lumiere/transparent.png\"\n"
+  "textures: \"/lumiere/transparent.png\"\n"
   "skeleton: \"\"\n"
   "animations: \"\"\n"
   "default_animation: \"\"\n"

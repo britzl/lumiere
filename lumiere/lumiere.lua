@@ -10,7 +10,8 @@ local lumiere = {
 	rt1 = nil,
 	rt2 = nil,
 	effects = {},
-	predicate = nil	
+	predicate = nil,
+	timestamp = 0,
 }
 
 function M.time()
@@ -75,22 +76,14 @@ end
 function M.use_effects(effects)
 	assert(effects)
 
-	clear_effects()
-	for i,effect in ipairs(effects or {}) do
-		lumiere.effects[i] = {
-			effect = effect,
-			initialized = false,
-			init = effect.init or function() end,
-			final = effect.final or function() end,
-			apply = effect.apply or function() end,
-			update = effect.update or function() end,
-		}
-	end
+	lumiere.new_effects = effects
 end
 
 function M.init()
 	assert(not lumiere.predicate, "You may only call lumiere.init() once")
 
+	lumiere.timestamp = socket.gettime()
+	
 	lumiere.predicate = render.predicate({"lumiere"})
 
 	local width = render.get_window_width()
@@ -117,8 +110,29 @@ function M.final()
 	lumiere.predicate = nil
 end
 
-function M.update(dt)
+function M.update()
+	local now = socket.gettime()
+	local dt = now - lumiere.timestamp
+	lumiere.timestamp = now
+	
 	time.x = time.x + dt
+
+
+	-- detect updates to effects
+	if lumiere.new_effects then
+		clear_effects()
+		for i,effect in ipairs(lumiere.new_effects or {}) do
+			lumiere.effects[i] = {
+				effect = effect,
+				init = effect.init or function() end,
+				final = effect.final or function() end,
+				apply = effect.apply or function() end,
+				update = effect.update or function() end,
+			}
+			effect.init()
+		end
+		lumiere.new_effects = nil
+	end	
 
 	-- detect resolution change
 	local width = render.get_window_width()
@@ -143,14 +157,6 @@ function M.draw(fn)
 		fn()
 		return
 	end
-
-	-- initialize effects if necessary
-	iterate_effects(function(i, effect)
-		if not effect.initialized then
-			effect.init()
-			effect.initialized = true
-		end
-	end)
 
 	-- update effects
 	iterate_effects(function(i, effect)
