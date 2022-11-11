@@ -9,7 +9,6 @@ uniform lowp vec4 resolution;
 // https://github.com/subsoap/deffx/blob/master/deffx/materials/rendertarget/blur_simple.fp
 void main()
 {
-	vec3 irgb = texture2D(DIFFUSE_TEXTURE, var_texcoord0).rgb;
 	float ResS = resolution.x;
 	float ResT = resolution.y;
 
