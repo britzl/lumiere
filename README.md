@@ -1,4 +1,4 @@
-# Lumiere
+# Lumiere - Work In Progress!
 Lumiere is a collection of post processing effects for use in Defold.
 
 ## Installation
