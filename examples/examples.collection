@@ -20,49 +20,6 @@ instances {
   }
 }
 instances {
-  id: "camera"
-  prototype: "/orthographic/camera.go"
-  position {
-    x: 120.0
-    y: 140.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  component_properties {
-    id: "script"
-    properties {
-      id: "near_z"
-      value: "-10.0"
-      type: PROPERTY_TYPE_NUMBER
-    }
-    properties {
-      id: "far_z"
-      value: "10.0"
-      type: PROPERTY_TYPE_NUMBER
-    }
-    properties {
-      id: "zoom"
-      value: "2.0"
-      type: PROPERTY_TYPE_NUMBER
-    }
-    properties {
-      id: "projection"
-      value: "FIXED_ZOOM"
-      type: PROPERTY_TYPE_HASH
-    }
-  }
-  scale3 {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-  }
-}
-instances {
   id: "gem1"
   prototype: "/examples/scene/gem.go"
   position {
@@ -383,26 +340,6 @@ instances {
   }
 }
 instances {
-  id: "lights1"
-  prototype: "/lumiere/effects/lights/lights.go"
-  position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale3 {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-  }
-}
-instances {
   id: "colorgrade"
   prototype: "/lumiere/effects/colorgrade/colorgrade.go"
   position {
@@ -447,6 +384,8 @@ embedded_instances {
   "    z: 0.0\n"
   "    w: 1.0\n"
   "  }\n"
+  "  property_decls {\n"
+  "  }\n"
   "}\n"
   "embedded_components {\n"
   "  id: \"instructions\"\n"
@@ -455,12 +394,6 @@ embedded_instances {
   "  x: 128.0\\n"
   "  y: 32.0\\n"
   "  z: 0.0\\n"
-  "  w: 0.0\\n"
-  "}\\n"
-  "scale {\\n"
-  "  x: 1.0\\n"
-  "  y: 1.0\\n"
-  "  z: 1.0\\n"
   "  w: 0.0\\n"
   "}\\n"
   "color {\\n"
@@ -491,7 +424,7 @@ embedded_instances {
   "material: \\\"/builtins/fonts/label.material\\\"\\n"
   "\"\n"
   "  position {\n"
-  "    x: -148.0\n"
+  "    x: 13.0\n"
   "    y: 0.0\n"
   "    z: 0.0\n"
   "  }\n"
@@ -533,7 +466,24 @@ embedded_instances {
   children: "torch2"
   children: "water1"
   children: "water2"
-  data: ""
+  data: "components {\n"
+  "  id: \"scene\"\n"
+  "  component: \"/examples/scene/scene.script\"\n"
+  "  position {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "  }\n"
+  "  rotation {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "    w: 1.0\n"
+  "  }\n"
+  "  property_decls {\n"
+  "  }\n"
+  "}\n"
+  ""
   position {
     x: 0.0
     y: 0.0
@@ -566,6 +516,8 @@ embedded_instances {
   "    y: 0.0\n"
   "    z: 0.0\n"
   "    w: 1.0\n"
+  "  }\n"
+  "  property_decls {\n"
   "  }\n"
   "}\n"
   ""
@@ -602,6 +554,8 @@ embedded_instances {
   "    z: 0.0\n"
   "    w: 1.0\n"
   "  }\n"
+  "  property_decls {\n"
+  "  }\n"
   "}\n"
   ""
   position {
@@ -631,12 +585,54 @@ embedded_instances {
   children: "grain"
   children: "lcd"
   children: "lights"
-  children: "lights1"
   children: "scanlines"
   data: ""
   position {
     x: 0.0
     y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale3 {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+  }
+}
+embedded_instances {
+  id: "camera"
+  data: "embedded_components {\n"
+  "  id: \"camera\"\n"
+  "  type: \"camera\"\n"
+  "  data: \"aspect_ratio: 1.0\\n"
+  "fov: 0.7854\\n"
+  "near_z: -10.0\\n"
+  "far_z: 10.0\\n"
+  "auto_aspect_ratio: 0\\n"
+  "orthographic_projection: 1\\n"
+  "orthographic_zoom: 2.0\\n"
+  "\"\n"
+  "  position {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "  }\n"
+  "  rotation {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "    w: 1.0\n"
+  "  }\n"
+  "}\n"
+  ""
+  position {
+    x: 284.0
+    y: 160.0
     z: 0.0
   }
   rotation {

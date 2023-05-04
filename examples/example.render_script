@@ -1,7 +1,4 @@
 local lumiere = require("lumiere.lumiere")
-local camera = require "orthographic.camera"
-
-local CAMERA_ID = hash("/camera")
 
 function init(self)
 	lumiere.init()
@@ -28,12 +25,6 @@ function update(self, dt)
 		return
 	end
 
-	-- update from camera
-	--
-	self.view = camera.get_view(CAMERA_ID)
-	self.projection = camera.get_projection(CAMERA_ID)
-	self.viewport = camera.get_viewport(CAMERA_ID)
-
 	-- clear screen buffers
 	--
 	render.set_depth_mask(true)
@@ -42,7 +33,7 @@ function update(self, dt)
 
 	-- render world (sprites, tilemaps, particles etc)
 	--
-	render.set_viewport(self.viewport.x, self.viewport.y, self.viewport.z, self.viewport.w)
+	render.set_viewport(0, 0, window_width, window_height)
 	render.set_view(self.view)
 	render.set_projection(self.projection)
 
@@ -78,4 +69,10 @@ end
 
 function on_message(self, message_id, message, sender)
 	lumiere.on_message(message_id, message, sender)
+	if message_id == hash("clear_color") then
+		self.clear_color = message.color
+	elseif message_id == hash("set_view_projection") then
+		self.view = message.view
+		self.projection = message.projection
+	end
 end

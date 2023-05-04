@@ -1,6 +1,6 @@
 [project]
 title = Lumiere
-dependencies#0 = https://github.com/britzl/defold-orthographic/archive/refs/tags/3.1.1.zip
+dependencies = 
 
 [bootstrap]
 main_collection = /examples/examples.collectionc
