@@ -1,0 +1,15 @@
+local lights = require "lumiere.effects.lights.lights"
+
+go.property("ambient_light", vmath.vector4(0.3, 0.3, 0.3, 1.0))
+go.property("intensity_min", 0.8)
+go.property("intensity_max", 1.0)
+
+function init(self)
+	lights.set_ambient_light(self.ambient_light)
+	lights.set_intensity(self.intensity_min, self.intensity_max)
+end
+
+function update(self, dt)
+	lights.set_ambient_light(self.ambient_light)
+	lights.set_intensity(self.intensity_min, self.intensity_max)
+end

@@ -2,14 +2,14 @@ local lumiere = require "lumiere.lumiere"
 
 local M = {}
 
-local AMBIENT_LIGHT = vmath.vector4(0.3, 0.3, 0.3, 1.0)
-local INTENSITY_MIN = 0.8
-local INTENSITY_MAX = 1.0
 local IDENTITY = vmath.matrix4()
 local LIGHT_PREDICATE = nil
 local APPLY_PREDICATE = nil
 local LIGHT_RT = nil
 
+local ambient_light = vmath.vector4(0.3, 0.3, 0.3, 1.0)
+local intensity_min = 0.8
+local intensity_max = 1.0
 local intensity_v4 = vmath.vector4()
 
 function M.init()
@@ -33,7 +33,7 @@ function M.final()
 end
 
 function M.update()
-	intensity_v4.x = INTENSITY_MIN + math.random() * (INTENSITY_MAX - INTENSITY_MIN)
+	intensity_v4.x = intensity_min + math.random() * (intensity_max - intensity_min)
 
 	local constants = render.constant_buffer()
 	constants.intensity = intensity_v4
@@ -48,7 +48,7 @@ end
 function M.apply(input)
 	local constants = render.constant_buffer()
 	constants.time = lumiere.time()
-	constants.ambient_light = AMBIENT_LIGHT
+	constants.ambient_light = ambient_light
 	
 	render.set_view(IDENTITY)
 	render.set_projection(IDENTITY)
@@ -58,6 +58,19 @@ function M.apply(input)
 	render.draw(APPLY_PREDICATE, { constants = constants })
 	render.disable_texture(0)
 	render.disable_texture(1)
+end
+
+
+function M.set_ambient_light(v4)
+	ambient_light.x = v4.x
+	ambient_light.y = v4.y
+	ambient_light.z = v4.z
+	ambient_light.w = v4.w
+end
+
+function M.set_intensity(min, max)
+	intensity_min = min
+	intensity_max = max
 end
 
 

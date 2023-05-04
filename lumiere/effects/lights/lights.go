@@ -1,3 +1,18 @@
+components {
+  id: "lights"
+  component: "/lumiere/effects/lights/lights.script"
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+}
 embedded_components {
   id: "model"
   type: "model"
