@@ -227,7 +227,9 @@ function update(self)
 		reset_camera_world(state)
 	end)
 	
+	set_camera_world(state)
 	render.draw_debug3d()
+	reset_camera_world(state)
 
 	-- render GUI
 	--

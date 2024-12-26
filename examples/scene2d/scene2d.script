@@ -1,3 +1,23 @@
 function init(self)
 	print("scene2d")
+
+	local clear_color = vmath.vector4(0, 0, 0, 1)
+	msg.post("@render:", "clear_color", { color = clear_color })
+	
+	self.debug = false
+end
+
+function update(self, dt)
+	if self.debug then
+		local width = sys.get_config_number("display.width")
+		local height = sys.get_config_number("display.height")
+		local zoom = go.get("camera2d#camera", "orthographic_zoom")
+		local lowerleft = vmath.vector3(0, 0, 0)
+		local lowerright = vmath.vector3(width / zoom, 0, 0)
+		local topleft = vmath.vector3(0, height / zoom, 0)
+		local topright = vmath.vector3(width / zoom, height / zoom, 0)
+		local color = vmath.vector4(1, 1, 1, 1)
+		msg.post("@render:", "draw_line", { start_point = lowerleft, end_point = topright, color = color })
+		msg.post("@render:", "draw_line", { start_point = lowerright, end_point = topleft, color = color })
+	end
 end
