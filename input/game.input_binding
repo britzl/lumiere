@@ -34,6 +34,10 @@ key_trigger {
   input: KEY_9
   action: "prg9"
 }
+key_trigger {
+  input: KEY_SPACE
+  action: "next"
+}
 mouse_trigger {
   input: MOUSE_BUTTON_1
   action: "touch"

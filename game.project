@@ -3,7 +3,7 @@ title = Lumiere
 dependencies = 
 
 [bootstrap]
-main_collection = /examples/examples.collectionc
+main_collection = /examples/example.collectionc
 render = /examples/example.renderc
 
 [input]

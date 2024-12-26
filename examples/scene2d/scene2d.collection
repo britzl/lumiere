@@ -1,0 +1,114 @@
+name: "scene2d"
+instances {
+  id: "torch1"
+  prototype: "/examples/scene2d/torch.go"
+  position {
+    x: 361.0
+    y: 64.0
+  }
+}
+instances {
+  id: "torch2"
+  prototype: "/examples/scene2d/torch.go"
+  position {
+    x: 239.0
+    y: 64.0
+  }
+}
+instances {
+  id: "water1"
+  prototype: "/examples/scene2d/water.go"
+  position {
+    x: 160.0
+    y: 16.0
+  }
+}
+instances {
+  id: "water2"
+  prototype: "/examples/scene2d/water.go"
+  position {
+    x: 192.0
+    y: 16.0
+  }
+}
+instances {
+  id: "gem1"
+  prototype: "/examples/scene2d/gem.go"
+  position {
+    x: 97.0
+    y: 57.0
+  }
+}
+instances {
+  id: "gem2"
+  prototype: "/examples/scene2d/gem.go"
+  position {
+    x: 179.0
+    y: 8.0
+  }
+}
+instances {
+  id: "lava1"
+  prototype: "/examples/scene2d/lava.go"
+  position {
+    x: 288.0
+    y: 16.0
+  }
+}
+instances {
+  id: "lava2"
+  prototype: "/examples/scene2d/lava.go"
+  position {
+    x: 320.0
+    y: 16.0
+  }
+}
+scale_along_z: 0
+embedded_instances {
+  id: "scene"
+  children: "camera2d"
+  children: "gem1"
+  children: "gem2"
+  children: "lava1"
+  children: "lava2"
+  children: "level"
+  children: "torch1"
+  children: "torch2"
+  children: "water1"
+  children: "water2"
+  data: "components {\n"
+  "  id: \"scene2d\"\n"
+  "  component: \"/examples/scene2d/scene2d.script\"\n"
+  "}\n"
+  ""
+}
+embedded_instances {
+  id: "camera2d"
+  data: "embedded_components {\n"
+  "  id: \"camera\"\n"
+  "  type: \"camera\"\n"
+  "  data: \"aspect_ratio: 1.0\\n"
+  "fov: 0.7854\\n"
+  "near_z: -10.0\\n"
+  "far_z: 10.0\\n"
+  "orthographic_projection: 1\\n"
+  "orthographic_zoom: 2.0\\n"
+  "\"\n"
+  "}\n"
+  ""
+  position {
+    x: 284.0
+    y: 160.0
+  }
+}
+embedded_instances {
+  id: "level"
+  data: "components {\n"
+  "  id: \"level\"\n"
+  "  component: \"/examples/scene2d/level.tilemap\"\n"
+  "}\n"
+  ""
+  position {
+    z: -1.0
+  }
+}

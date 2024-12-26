@@ -1,0 +1,60 @@
+script: "/examples/hud/hud.gui_script"
+fonts {
+  name: "vera_mo"
+  font: "/examples/assets/vera_mo.font"
+}
+textures {
+  name: "meter"
+  texture: "/examples/assets/meter.tilesource"
+}
+nodes {
+  scale {
+    x: 2.0
+    y: 2.0
+  }
+  type: TYPE_BOX
+  texture: "meter/life1"
+  id: "root"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 460.5
+    y: 295.5
+  }
+  type: TYPE_BOX
+  texture: "meter/life3"
+  id: "meter"
+  parent: "root"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 5.0
+    y: 5.0
+  }
+  scale {
+    x: 0.5
+    y: 0.5
+    z: 0.5
+  }
+  size {
+    x: 1116.0
+    y: 100.0
+  }
+  type: TYPE_TEXT
+  font: "vera_mo"
+  id: "instructions"
+  pivot: PIVOT_SW
+  line_break: true
+  parent: "root"
+  inherit_alpha: true
+  material: "font"
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT
+materials {
+  name: "font"
+  material: "/builtins/fonts/font.material"
+}

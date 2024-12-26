@@ -12,6 +12,7 @@ local lumiere = {
 	effects = {},
 	predicate = nil,
 	timestamp = 0,
+	clear_options = {[render.BUFFER_COLOR_BIT] = clear_color, [render.BUFFER_DEPTH_BIT] = 1}
 }
 
 function M.time()
@@ -117,7 +118,6 @@ function M.update()
 	
 	time.x = time.x + dt
 
-
 	-- detect updates to effects
 	if lumiere.new_effects then
 		clear_effects()
@@ -168,6 +168,7 @@ function M.draw(fn)
 
 	-- draw to the first render target
 	render.set_render_target(input)
+	render.clear(lumiere.clear_options)
 	fn()
 	render.set_render_target(render.RENDER_TARGET_DEFAULT)
 
@@ -192,6 +193,7 @@ end
 function M.on_message(message_id, message, sender)
 	if message_id == hash("clear_color") then
 		clear_color = message.color
+		lumiere.clear_options[render.BUFFER_COLOR_BIT] = message.color
 	end
 end
 

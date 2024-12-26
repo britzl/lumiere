@@ -1,0 +1,94 @@
+name: "example"
+instances {
+  id: "lumiere"
+  prototype: "/lumiere/lumiere.go"
+}
+instances {
+  id: "grain"
+  prototype: "/lumiere/effects/grain/grain.go"
+}
+instances {
+  id: "lcd"
+  prototype: "/lumiere/effects/lcd/lcd.go"
+}
+instances {
+  id: "scanlines"
+  prototype: "/lumiere/effects/scanlines/scanlines.go"
+}
+instances {
+  id: "blur"
+  prototype: "/lumiere/effects/blur/blur.go"
+}
+instances {
+  id: "chromatic_aberration"
+  prototype: "/lumiere/effects/chromatic_aberration/chromatic_aberration.go"
+}
+instances {
+  id: "chromatical"
+  prototype: "/lumiere/effects/chromatical/chromatical.go"
+}
+instances {
+  id: "distortion"
+  prototype: "/lumiere/effects/distortion/distortion.go"
+}
+instances {
+  id: "lights"
+  prototype: "/lumiere/effects/lights/lights.go"
+}
+instances {
+  id: "colorgrade"
+  prototype: "/lumiere/effects/colorgrade/colorgrade.go"
+  component_properties {
+    id: "colorgrade"
+    properties {
+      id: "lut"
+      value: "/examples/assets/colorgrade_lut_example.atlas"
+      type: PROPERTY_TYPE_HASH
+    }
+  }
+}
+scale_along_z: 0
+embedded_instances {
+  id: "examples"
+  data: "components {\n"
+  "  id: \"examples\"\n"
+  "  component: \"/examples/examples.script\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"scene2dproxy\"\n"
+  "  type: \"collectionproxy\"\n"
+  "  data: \"collection: \\\"/examples/scene2d/scene2d.collection\\\"\\n"
+  "\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"scene3dproxy\"\n"
+  "  type: \"collectionproxy\"\n"
+  "  data: \"collection: \\\"/examples/scene3d/scene3d.collection\\\"\\n"
+  "\"\n"
+  "}\n"
+  ""
+  position {
+    z: 1.0
+  }
+}
+embedded_instances {
+  id: "effects"
+  children: "blur"
+  children: "chromatic_aberration"
+  children: "chromatical"
+  children: "colorgrade"
+  children: "distortion"
+  children: "grain"
+  children: "lcd"
+  children: "lights"
+  children: "scanlines"
+  data: ""
+}
+embedded_instances {
+  id: "hud"
+  data: "components {\n"
+  "  id: \"hud\"\n"
+  "  component: \"/examples/hud/hud.gui\"\n"
+  "}\n"
+  ""
+}

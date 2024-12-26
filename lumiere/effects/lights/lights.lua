@@ -24,7 +24,7 @@ function M.init()
 		u_wrap = render.WRAP_CLAMP_TO_EDGE,
 		v_wrap = render.WRAP_CLAMP_TO_EDGE }
 
-	LIGHT_RT = render.render_target({[render.BUFFER_COLOR_BIT] = color_params })	
+	LIGHT_RT = render.render_target({[render.BUFFER_COLOR_BIT] = color_params })
 end
 
 function M.final()
