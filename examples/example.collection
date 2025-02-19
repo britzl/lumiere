@@ -45,6 +45,11 @@ instances {
       value: "/examples/assets/colorgrade_lut_example.atlas"
       type: PROPERTY_TYPE_HASH
     }
+    properties {
+      id: "image"
+      value: "colorgrade_lut16"
+      type: PROPERTY_TYPE_HASH
+    }
   }
 }
 scale_along_z: 0

@@ -1,15 +1,20 @@
 go.property("lut", resource.atlas("/lumiere/effects/colorgrade/colorgrade_lut.atlas"))
+go.property("image", hash("lut16"))
 
-local colorgrade = require "lumiere.effects.colorgrade.colorgrade"
-
-function init(self)
+local function update_lut(self)
 	self.current_lut = self.lut
 	go.set("#lut", "image", self.lut)
+	timer.delay(0, false, function()
+		sprite.play_flipbook("#lut", self.image)
+	end)
+end
+
+function init(self)
+	update_lut(self)
 end
 
 function update(self, dt)
 	if self.current_lut ~= self.lut then
-		self.current_lut = self.lut
-		go.set("#lut", "image", self.lut)
+		update_lut(self)
 	end
 end
