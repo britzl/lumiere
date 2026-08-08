@@ -1,7 +1,7 @@
 embedded_components {
   id: "model"
   type: "model"
-  data: "mesh: \"/builtins/assets/meshes/quad_2x2.dae\"\n"
+  data: "mesh: \"/builtins/assets/gltf/quad_2x2.gltf\"\n"
   "material: \"/lumiere/effects/chromatic_aberration/chromatic_aberration.material\"\n"
   "skeleton: \"\"\n"
   "animations: \"\"\n"
