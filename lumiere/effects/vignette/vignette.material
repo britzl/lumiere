@@ -1,0 +1,8 @@
+name: "vignette"
+tags: "vignette"
+vertex_program: "/lumiere/effects/vignette/vignette.vp"
+fragment_program: "/lumiere/effects/vignette/vignette.fp"
+vertex_constants {
+  name: "view_proj"
+  type: CONSTANT_TYPE_VIEWPROJ
+}
