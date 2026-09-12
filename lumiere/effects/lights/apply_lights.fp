@@ -15,5 +15,5 @@ void main()
 	lowp vec4 input_col = texture2D(input_tex, var_texcoord0.xy) * tint0_pm;
 	lowp vec4 lights_col = texture2D(lights_tex, var_texcoord0.xy) * tint1_pm;
 
-	gl_FragColor = input_col*(ambient_light+lights_col);
+	gl_FragColor = vec4(input_col.rgb * (ambient_light.rgb + lights_col.rgb), input_col.a);
 }
