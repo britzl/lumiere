@@ -61,9 +61,11 @@ function update(self, dt)
 end
 
 function on_input(self, action_id, action)
-	-- move directional light based on input
-	self.light.x = 2 * ((action.x - 480) / 480)
-	self.light.y = 2 * ((action.y - 320) / 320)
-	go.set("cube#model", "light", self.light)
-	go.set("sphere#model", "light", self.light)
+	if action.x and action.y then
+		-- move directional light based on input
+		self.light.x = 2 * ((action.x - 480) / 480)
+		self.light.y = 2 * ((action.y - 320) / 320)
+		go.set("cube#model", "light", self.light)
+		go.set("sphere#model", "light", self.light)
+	end
 end
