@@ -12,33 +12,33 @@ local LUT_HEIGHT = 16
 function M.init()
 	APPLY_PREDICATE = render.predicate({ hash("colorgrade") })
 	LUT_PREDICATE = render.predicate({ hash("colorgrade_lut") })
+
+	local color_params = {
+		format = graphics.TEXTURE_FORMAT_RGBA,
+		width = LUT_WIDTH,
+		height = LUT_HEIGHT,
+		min_filter = graphics.TEXTURE_FILTER_LINEAR,
+		mag_filter = graphics.TEXTURE_FILTER_LINEAR,
+		u_wrap = graphics.TEXTURE_WRAP_CLAMP_TO_EDGE,
+		v_wrap = graphics.TEXTURE_WRAP_CLAMP_TO_EDGE
+	}
+
+	LUT_RT = render.render_target({[graphics.BUFFER_TYPE_COLOR0_BIT] = color_params })	
+
+	render.set_render_target(LUT_RT)
+	render.set_camera()
+	render.set_viewport(0, 0, LUT_WIDTH, LUT_HEIGHT)
+	render.set_view(IDENTITY)
+	render.set_projection(vmath.matrix4_orthographic(0, LUT_WIDTH, 0, LUT_HEIGHT, -1, 1))
+	render.clear({[graphics.BUFFER_TYPE_COLOR0_BIT] = lumiere.clear_color()})
+	render.draw(LUT_PREDICATE)
+	render.set_render_target(render.RENDER_TARGET_DEFAULT)
 end
 
 function M.final()
 	if LUT_RT then
 		render.delete_render_target(LUT_RT)
 		LUT_RT = nil
-	end
-end
-
-function M.update()
-	if not LUT_RT then
-		local color_params = { format = graphics.TEXTURE_FORMAT_RGBA,
-			width = LUT_WIDTH,
-			height = LUT_HEIGHT,
-			min_filter = graphics.TEXTURE_FILTER_LINEAR,
-			mag_filter = graphics.TEXTURE_FILTER_LINEAR,
-			u_wrap = graphics.TEXTURE_WRAP_CLAMP_TO_EDGE,
-			v_wrap = graphics.TEXTURE_WRAP_CLAMP_TO_EDGE }
-
-		LUT_RT = render.render_target({[graphics.BUFFER_TYPE_COLOR0_BIT] = color_params })	
-
-		render.set_render_target(LUT_RT)
-		render.set_view(IDENTITY)
-		render.set_projection(vmath.matrix4_orthographic(0, render.get_window_width(), 0, render.get_window_height(), -1, 1))
-		render.clear({[graphics.BUFFER_TYPE_COLOR0_BIT] = lumiere.clear_color()})
-		render.draw(LUT_PREDICATE)
-		render.set_render_target(render.RENDER_TARGET_DEFAULT)
 	end
 end
 
