@@ -200,8 +200,9 @@ function update(self)
 	--
 	render.set_viewport(0, 0, state.window_width, state.window_height)
 
+	-- Effect updates draw world-space objects before the world callback runs.
+	local draw_options_world = set_camera_world(state)
 	lumiere.draw(function()
-		local draw_options_world = set_camera_world(state)
 		-- set states used for all the world predicates
 		render.set_blend_func(graphics.BLEND_FACTOR_SRC_ALPHA, graphics.BLEND_FACTOR_ONE_MINUS_SRC_ALPHA)
 		render.enable_state(graphics.STATE_DEPTH_TEST)
