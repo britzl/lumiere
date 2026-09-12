@@ -2,11 +2,9 @@
 // positions are in world space
 attribute mediump vec4 position;
 attribute mediump vec2 texcoord0;
-attribute mediump vec3 normal;
 
 uniform mediump mat4 mtx_view;
 uniform mediump mat4 mtx_proj;
-uniform mediump mat4 mtx_normal;
 
 varying mediump vec2 var_texcoord0;
 

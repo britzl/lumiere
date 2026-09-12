@@ -13,14 +13,11 @@ function M.final()
 end
 
 function M.apply(input)
-	local constants = render.constant_buffer()
-	constants.time = lumiere.time()
-
 	render.set_view(IDENTITY)
 	render.set_projection(IDENTITY)
 	render.clear({[graphics.BUFFER_TYPE_COLOR0_BIT] = lumiere.clear_color(), [graphics.BUFFER_TYPE_DEPTH_BIT] = 1})
 	render.enable_texture(0, input, graphics.BUFFER_TYPE_COLOR0_BIT)
-	render.draw(PREDICATE, { constants = constants })
+	render.draw(PREDICATE)
 	render.disable_texture(0)
 end
 

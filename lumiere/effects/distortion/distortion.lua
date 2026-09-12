@@ -37,16 +37,13 @@ function M.update()
 end
 
 function M.apply(input)
-	local constants = render.constant_buffer()
-	constants.time = lumiere.time()
-
 	-- apply distortion by combining the mask and input
 	render.set_view(IDENTITY)
 	render.set_projection(IDENTITY)
 	render.clear({[graphics.BUFFER_TYPE_COLOR0_BIT] = lumiere.clear_color(), [graphics.BUFFER_TYPE_DEPTH_BIT] = 1})
 	render.enable_texture(0, input, graphics.BUFFER_TYPE_COLOR0_BIT)
 	render.enable_texture(1, DISTORTION_RT, graphics.BUFFER_TYPE_COLOR0_BIT)
-	render.draw(APPLY_PREDICATE, { constants = constants })
+	render.draw(APPLY_PREDICATE)
 	render.disable_texture(0)
 	render.disable_texture(1)
 end
