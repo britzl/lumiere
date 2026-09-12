@@ -52,6 +52,10 @@ instances {
     }
   }
 }
+instances {
+  id: "vignette"
+  prototype: "/lumiere/effects/vignette/vignette.go"
+}
 scale_along_z: 0
 embedded_instances {
   id: "examples"
@@ -87,6 +91,7 @@ embedded_instances {
   children: "lcd"
   children: "lights"
   children: "scanlines"
+  children: "vignette"
   data: ""
 }
 embedded_instances {

@@ -27,6 +27,7 @@ Examples of effects provided:
 * [LCD](lumiere/effects/lcd/)
 * [Scanlines](lumiere/effects/scanlines/)
 * [Colorgrade](lumiere/effects/colorgrade/)
+* [Vignette](lumiere/effects/vignette/)
 
 ## Quick Start
 
