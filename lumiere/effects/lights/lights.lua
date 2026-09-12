@@ -42,7 +42,9 @@ function M.update()
 	-- draw everything that is a light to a separet render target
 	render.set_render_target(LIGHT_RT)
 	render.clear({[graphics.BUFFER_TYPE_COLOR0_BIT] = LIGHT_CLEAR_COLOR})
+	render.enable_state(graphics.STATE_BLEND)
 	render.draw(LIGHT_PREDICATE, { constants = constants })
+	render.disable_state(graphics.STATE_BLEND)
 	render.set_render_target(render.RENDER_TARGET_DEFAULT)
 end
 
