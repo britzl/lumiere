@@ -3,6 +3,7 @@ local lumiere = require "lumiere.lumiere"
 local M = {}
 
 local IDENTITY = vmath.matrix4()
+local LIGHT_CLEAR_COLOR = vmath.vector4(0, 0, 0, 0)
 local LIGHT_PREDICATE = nil
 local APPLY_PREDICATE = nil
 local LIGHT_RT = nil
@@ -40,7 +41,7 @@ function M.update()
 
 	-- draw everything that is a light to a separet render target
 	render.set_render_target(LIGHT_RT)
-	render.clear({[graphics.BUFFER_TYPE_COLOR0_BIT] = lumiere.clear_color()})
+	render.clear({[graphics.BUFFER_TYPE_COLOR0_BIT] = LIGHT_CLEAR_COLOR})
 	render.draw(LIGHT_PREDICATE, { constants = constants })
 	render.set_render_target(render.RENDER_TARGET_DEFAULT)
 end
